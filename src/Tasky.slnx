@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/Services/" />
+  <Folder Name="/Services/Identities/">
+    <Project Path="Services/Identities/Tasky.Services.Identities.API/Tasky.Services.Identities.API.csproj" />
+    <Project Path="Services/Identities/Tasky.Services.Identities.Application/Tasky.Services.Identities.Application.csproj" />
+    <Project Path="Services/Identities/Tasky.Services.Identities.Domain/Tasky.Services.Identities.Domain.csproj" />
+    <Project Path="Services/Identities/Tasky.Services.Identities.Infrastructure/Tasky.Services.Identities.Infrastructure.csproj" />
+  </Folder>
+</Solution>

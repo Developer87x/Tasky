@@ -1,0 +1,31 @@
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine3.23 AS base
+WORKDIR /app
+EXPOSE 80
+
+
+FROM mcr.microsoft.com/dotnet/sdk:10.0.202-alpine3.23-amd64 AS build
+WORKDIR /src
+COPY "Tasky.slnx" "Tasky.slnx"
+COPY "Services/Identities/Tasky.Services.Identities.Domain/Tasky.Services.Identities.Domain.csproj" "Services/Identities/Tasky.Services.Identities.Domain/Tasky.Services.Identities.Domain.csproj"
+COPY "Services/Identities/Tasky.Services.Identities.Application/Tasky.Services.Identities.Application.csproj" "Services/Identities/Tasky.Services.Identities.Application/Tasky.Services.Identities.Application.csproj"
+COPY "Services/Identities/Tasky.Services.Identities.Infrastructure/Tasky.Services.Identities.Infrastructure.csproj" "Services/Identities/Tasky.Services.Identities.Infrastructure/Tasky.Services.Identities.Infrastructure.csproj"
+COPY "Services/Identities/Tasky.Services.Identities.API/Tasky.Services.Identities.API.csproj" "Services/Identities/Tasky.Services.Identities.API/Tasky.Services.Identities.API.csproj"
+
+
+COPY "NuGet.config" "NuGet.config"
+
+
+
+RUN dotnet restore "Tasky.slnx"
+
+COPY . .
+WORKDIR /src/Services/Identities/Tasky.Services.Identities.API
+RUN dotnet publish  -c Release -o /app
+
+FROM build AS publish
+
+FROM base AS final
+WORKDIR /app
+
+COPY --from=publish /app .
+ENTRYPOINT [ "dotnet","Tasky.Services.Identities.API.dll" ]

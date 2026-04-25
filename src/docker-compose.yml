@@ -1,0 +1,27 @@
+services:
+  postgres:
+    image: postgres:12.2-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  identities:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+      - JwtSettings__Secret=yBG5WrUlLIrYVT/WqbHRGsup5m+taMg8T7IEZyOupQto=
+      - PORT=80
+    build:
+      context: .
+      dockerfile: Services/Identities/Tasky.Services.Identities.API/Dockerfile
+    ports:
+      - "5102:80"
+    depends_on:
+      - postgres
+volumes:
+  postgres_data:
+    driver: local
