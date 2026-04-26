@@ -1,9 +1,10 @@
-namespace Tasky.Services.Identities.Application.Dtos;
-
-public class LoginResultDto
+namespace Tasky.Services.Identities.Application.Dtos
 {
-    public string? AccessToken { get; set; }
-    public string? RefreshToken { get; set; }
+    public class LoginResultDto
+    {
+        public string? AccessToken { get; set; }
+        public string? RefreshToken { get; set; }
+    }
+
+
 }
-
-

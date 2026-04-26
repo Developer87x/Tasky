@@ -1,13 +1,14 @@
-namespace Tasky.Services.Identities.Application.Dtos;
-
-public class UserDto
+namespace Tasky.Services.Identities.Application.Dtos
 {
-    public string? UserName { get; set; }
-    public string? Email { get; set; }
-    public List<RoleDto>? Roles { get; set; }
-}
+    public class UserDto
+    {
+        public string? UserName { get; set; }
+        public string? Email { get; set; }
+        public List<RoleDto>? Roles { get; set; }
+    }
 
-public class RoleDto
-{
-    public string? RoleName { get; set; }
+    public class RoleDto
+    {
+        public string? RoleName { get; set; }
+    }
 }

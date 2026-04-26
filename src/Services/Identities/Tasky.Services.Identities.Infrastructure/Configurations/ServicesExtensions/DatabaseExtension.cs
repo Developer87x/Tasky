@@ -7,63 +7,64 @@ using Tasky.Services.Identities.Infrastructure.Persistence;
 using Tasky.Services.Identities.Infrastructure.Persistence.Repositories;
 using Tasky.Services.Identities.Infrastructure.Services;
 
-namespace Tasky.Services.Identities.Infrastructure.Configurations.ServicesExtensions;
-
-public static class DatabaseExtension
+namespace Tasky.Services.Identities.Infrastructure.Configurations.ServicesExtensions
 {
-    public static IServiceCollection AddIdentityDatabase(this IServiceCollection services, IConfiguration configuration)
+    public static class DatabaseExtension
     {
-        services.AddDbContext<IdentityDb>(options =>
+        public static IServiceCollection AddIdentityDatabase(this IServiceCollection services, IConfiguration configuration)
         {
-            options.UseNpgsql(configuration.GetConnectionString("IdentityDbStr"),
-            s =>
+            services.AddDbContext<IdentityDb>(options =>
             {
-                s.MigrationsAssembly("Tasky.Services.Identities.Infrastructure");
-                s.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+                options.UseNpgsql(configuration.GetConnectionString("IdentityDbStr"),
+                s =>
+                {
+                    s.MigrationsAssembly("Tasky.Services.Identities.Infrastructure");
+                    s.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+                });
             });
-        });
-        return services;
-    }
+            return services;
+        }
 
-    public static IServiceCollection AddRepositories(this IServiceCollection services)
-    {
-        services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IRoleRepository, RoleRepository>();
-        services.AddScoped<IPasswordHasher, PasswordHasher>();
-        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
-        services.AddScoped<ITokenService, TokenService>();
-        return services;
-    }
-
-
-    public static IServiceCollection AddJwt(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
-
-
-        var jwtSettingsSection = configuration.GetSection("JwtSettings");
-        services.AddAuthentication(auth =>
+        public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
-            auth.DefaultAuthenticateScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
-            auth.DefaultChallengeScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
-            auth.DefaultForbidScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
-            auth.DefaultScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;  
-        }).AddJwtBearer(opt =>
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IPasswordHasher, PasswordHasher>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            services.AddScoped<ITokenService, TokenService>();
+            return services;
+        }
+
+
+        public static IServiceCollection AddJwt(this IServiceCollection services, IConfiguration configuration)
         {
-            opt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+            services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+
+
+            var jwtSettingsSection = configuration.GetSection("JwtSettings");
+            services.AddAuthentication(auth =>
             {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = jwtSettingsSection["Issuer"],
-                ValidAudience = jwtSettingsSection["Audience"],
-                IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtSettingsSection["Secret"]!)),
-                ClockSkew = TimeSpan.Zero
-            };
-        });
-        services.AddAuthorization();
-        return services;
+                auth.DefaultAuthenticateScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
+                auth.DefaultChallengeScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
+                auth.DefaultForbidScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
+                auth.DefaultScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;  
+            }).AddJwtBearer(opt =>
+            {
+                opt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtSettingsSection["Issuer"],
+                    ValidAudience = jwtSettingsSection["Audience"],
+                    IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtSettingsSection["Secret"]!)),
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+            services.AddAuthorization();
+            return services;
+        }
     }
-}
 
+}

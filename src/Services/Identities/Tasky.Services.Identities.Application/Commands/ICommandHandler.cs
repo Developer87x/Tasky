@@ -1,6 +1,7 @@
-namespace Tasky.Services.Identities.Application.Commands;
-
-public interface ICommandHandler<TCommand, TResponse> where TCommand : ICommand<TResponse>
+namespace Tasky.Services.Identities.Application.Commands
 {
-    Task<TResponse> Handle(TCommand command);
+    public interface ICommandHandler<TCommand, TResponse> where TCommand : ICommand<TResponse>
+    {
+        Task<TResponse> Handle(TCommand command);
+    }
 }

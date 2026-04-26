@@ -1,8 +1,9 @@
-namespace Tasky.Services.Identities.Application.Dtos;
-
-public class ResultDto<T>
+namespace Tasky.Services.Identities.Application.Dtos
 {
-    public bool IsSuccess { get; set; }
-    public string? Message { get; set; }
-    public T? Data { get; set; }
+    public class ResultDto<T>
+    {
+        public bool IsSuccess { get; set; }
+        public string? Message { get; set; }
+        public T? Data { get; set; }
+    }
 }

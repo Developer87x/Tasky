@@ -1,7 +1,8 @@
-namespace Tasky.Services.Identities.Domain.Repositories;
-
-public interface IPasswordHasher
+namespace Tasky.Services.Identities.Domain.Repositories
 {
-    Task<string> HashPasswordAsync(string password);
-    Task<bool> VerifyPasswordAsync(string hashedPassword, string providedPassword);
+    public interface IPasswordHasher
+    {
+        Task<string> HashPasswordAsync(string password);
+        Task<bool> VerifyPasswordAsync(string hashedPassword, string providedPassword);
+    }
 }

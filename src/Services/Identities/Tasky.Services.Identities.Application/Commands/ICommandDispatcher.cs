@@ -1,6 +1,7 @@
-namespace Tasky.Services.Identities.Application.Commands;
-
-public interface ICommandDispatcher
+namespace Tasky.Services.Identities.Application.Commands
 {
-    Task<TResponse> Send<TResponse>(ICommand<TResponse> command);
+    public interface ICommandDispatcher
+    {
+        Task<TResponse> Send<TResponse>(ICommand<TResponse> command);
+    }
 }

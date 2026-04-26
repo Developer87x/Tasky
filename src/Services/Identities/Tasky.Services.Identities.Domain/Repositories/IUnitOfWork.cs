@@ -1,7 +1,8 @@
-namespace Tasky.Services.Identities.Domain.Repositories;
-
-public interface IUnitOfWork
+namespace Tasky.Services.Identities.Domain.Repositories
 {
-    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
-    Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default);
+    public interface IUnitOfWork
+    {
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+        Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default);
+    }
 }
