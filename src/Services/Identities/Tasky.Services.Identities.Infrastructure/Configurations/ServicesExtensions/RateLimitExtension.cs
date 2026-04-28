@@ -4,39 +4,38 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Tasky.Services.Identities.Infrastructure.Configurations.ServicesExtensions
-{
-    public static class RateLimitExtension
-    {
-        public const string RATE_LIMIT_POLICY_FOR_AUTHENTICATED_USERS = "AuthenticatedUsersPolicy";
-        public static IServiceCollection AddRateLimiting(this IServiceCollection services)
-        {
-            services.AddRateLimiter(rateLimit =>
-            {
-                rateLimit.AddFixedWindowLimiter(RATE_LIMIT_POLICY_FOR_AUTHENTICATED_USERS, opt =>
-                {
-                    opt.PermitLimit =5;
-                    opt.Window = TimeSpan.FromMinutes(1);
-                    opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-                    opt.QueueLimit = 0;
-                });
-                rateLimit.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-                rateLimit.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
-                    RateLimitPartition.GetFixedWindowLimiter(
-                        partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
-                        factory: _ => new FixedWindowRateLimiterOptions
-                        {
-                            PermitLimit = 100,
-                            Window = TimeSpan.FromMinutes(1)
-                        }));       
-            });
-            return services;
-        }
+namespace Tasky.Services.Identities.Infrastructure.Configurations.ServicesExtensions;
 
-        public static WebApplication UseRateLimiting(this WebApplication app)
+public static class RateLimitExtension
+{
+    public const string RATE_LIMIT_POLICY_FOR_AUTHENTICATED_USERS = "AuthenticatedUsersPolicy";
+    public static IServiceCollection AddRateLimiting(this IServiceCollection services)
+    {
+        services.AddRateLimiter(rateLimit =>
         {
-            app.UseRateLimiter();
-            return app;
-        }
+            rateLimit.AddFixedWindowLimiter(RATE_LIMIT_POLICY_FOR_AUTHENTICATED_USERS, opt =>
+            {
+                opt.PermitLimit =5;
+                opt.Window = TimeSpan.FromMinutes(1);
+                opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                opt.QueueLimit = 0;
+            });
+            rateLimit.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+            rateLimit.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                    factory: _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 100,
+                        Window = TimeSpan.FromMinutes(1)
+                    }));       
+        });
+        return services;
+    }
+
+    public static WebApplication UseRateLimiting(this WebApplication app)
+    {
+        app.UseRateLimiter();
+        return app;
     }
 }

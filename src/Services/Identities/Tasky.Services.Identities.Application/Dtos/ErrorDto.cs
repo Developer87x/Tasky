@@ -1,8 +1,7 @@
-namespace Tasky.Services.Identities.Application.Dtos
+namespace Tasky.Services.Identities.Application.Dtos;
+
+public class ErrorDto
 {
-    public class ErrorDto
-    {
-        public string? Message { get; set; }
-        public int StatusCode { get; set; }
-    }
+    public string? Message { get; set; }
+    public int StatusCode { get; set; }
 }

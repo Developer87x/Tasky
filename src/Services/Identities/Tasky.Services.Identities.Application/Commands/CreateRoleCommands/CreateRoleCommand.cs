@@ -1,7 +1,6 @@
-namespace Tasky.Services.Identities.Application.Commands.CreateRoleCommands
+namespace Tasky.Services.Identities.Application.Commands.CreateRoleCommands;
+
+public class CreateRoleCommand :ICommand<bool>
 {
-    public class CreateRoleCommand :ICommand<bool>
-    {
-        public string? RoleName { get;  set; }
-    }
+    public string? RoleName { get;  set; }
 }

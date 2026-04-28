@@ -1,10 +1,9 @@
 using Tasky.Services.Identities.Application.Dtos;
 
-namespace Tasky.Services.Identities.Application.Queries
+namespace Tasky.Services.Identities.Application.Queries;
+
+public interface IRoleQueries
 {
-    public interface IRoleQueries
-    {
-        Task<PaginationDto<RoleDto>> GetAllRolesAsync(PaginationRequestDto paginationRequest);
-    
-    }
+    Task<PaginationDto<RoleDto>> GetAllRolesAsync(PaginationRequestDto paginationRequest);
+
 }

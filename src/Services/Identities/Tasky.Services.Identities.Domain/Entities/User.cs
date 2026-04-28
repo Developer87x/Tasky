@@ -1,73 +1,75 @@
+using Tasky.Services.Identities.Domain.DomainEvents;
+using Tasky.Services.Identities.Domain.SharedKernel;
 using Tasky.Services.Identities.Domain.ValueObjects;
 
-namespace Tasky.Services.Identities.Domain.Entities
+namespace Tasky.Services.Identities.Domain.Entities;
+
+public class User : AggregateRoot<User, UserId>
 {
-    public class User
+
+    private readonly List<Role> _roles = [];
+    private readonly List<RefreshToken> _refreshTokens = [];
+
+    public Email? Email { get; private set; }
+    public string? UserName { get; private set; }
+    public Password? Password { get; private set; }
+    public bool IsActive { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+    public DateTime? UpdatedAt { get; private set; }
+    public IReadOnlyCollection<Role> Roles => _roles.AsReadOnly();
+    public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens.AsReadOnly();
+    private User() :base(UserId.NewId()) { }
+    private User(UserId id, Email? email, string? userName, Password? password, DateTime createdAt, DateTime? updatedAt) : this()
     {
+        Id = id;
+        Email = email;
+        UserName = userName;
+        Password = password;
+        IsActive = false;
+        CreatedAt = createdAt;
+        UpdatedAt = updatedAt;
+        AddDomainEvent(new CreatedUserDomainEvent(Id)); 
+    }
 
-        private readonly List<Role> _roles = [];
-        private readonly List<RefreshToken> _refreshTokens = [];
-        public Guid Id { get; private set; }
-        public string? Email { get; private set; }
-        public string? UserName { get; private set; }
-        public Password? Password { get; private set; }
-        public bool IsActive { get; private set; }
-        public DateTime CreatedAt { get; private set; }
-        public DateTime? UpdatedAt { get; private set; }
-        public IReadOnlyCollection<Role> Roles => _roles.AsReadOnly();
-        public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens.AsReadOnly();
-        private User() { }
-        private User(Guid id, string? email, string? userName, Password? password, DateTime createdAt, DateTime? updatedAt):this()
+    public static User Create(Email email, string? userName, Password password) => new(UserId.NewId(), email, userName, password, DateTime.UtcNow, null);
+
+    public void Activate()
+    {
+        IsActive = true;
+        UpdatedAt = DateTime.UtcNow;
+    }
+    public void Deactivate()
+    {
+        IsActive = false;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void UpdateEmail(Email? email)
+    {
+        Email= email;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void AddRole(Role role)
+    {
+        if (!_roles.Any(r => r.Id == role.Id))
         {
-            Id = id;
-            Email = email;
-            UserName = userName;
-            Password = password;
-            IsActive = false;
-            CreatedAt = createdAt;
-            UpdatedAt = updatedAt;
-        }
-
-        public static User Create(string? email, string? userName, Password? password) => new(Guid.NewGuid(), email, userName, password, DateTime.UtcNow, null);
-
-        public void Activate()
-        {
-            IsActive = true;
+            _roles.Add(role);
             UpdatedAt = DateTime.UtcNow;
         }
-        public void Deactivate()
-        {
-            IsActive = false;
-            UpdatedAt = DateTime.UtcNow;
-        }
+    }
 
-        public void UpdateEmail(string? email)
+    public RefreshToken AddRefreshToken()
+    {
+        foreach (var token in _refreshTokens)
         {
-            Email= email;
-            UpdatedAt = DateTime.UtcNow;
-        }
-
-        public void AddRole(Role role)
-        {
-            if (!_roles.Any(r => r.Id == role.Id))
+            if (token.IsActive)
             {
-                _roles.Add(role);
-                UpdatedAt = DateTime.UtcNow;
+                token.Revoke();
             }
         }
-
-        public RefreshToken AddRefreshToken()
-        {
-            foreach (var token in _refreshTokens)
-            {
-                if (token.IsActive)
-                {
-                    token.Revoke();
-                }
-            }
-            var newToken = RefreshToken.Create(Id);
-            _refreshTokens.Add(newToken);
-            return newToken;
-        }
+        var newToken = RefreshToken.Create(Id);
+        _refreshTokens.Add(newToken);
+        return newToken;
     }
 }

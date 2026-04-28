@@ -1,9 +1,8 @@
 using Tasky.Services.Identities.Domain.Entities;
 
-namespace Tasky.Services.Identities.Application.Services
+namespace Tasky.Services.Identities.Application.Services;
+
+public interface ITokenService
 {
-    public interface ITokenService
-    {
-        string GenerateToken(User user);
-    }
+    string GenerateToken(User user);
 }

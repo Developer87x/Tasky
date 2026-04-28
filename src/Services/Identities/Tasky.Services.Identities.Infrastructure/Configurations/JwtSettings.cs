@@ -1,11 +1,10 @@
-namespace Tasky.Services.Identities.Infrastructure.Configurations
-{
+namespace Tasky.Services.Identities.Infrastructure.Configurations;
 
-    public class JwtSettings
-    {
-        public string? Secret { get; set; }
-        public string? Issuer { get; set; }
-        public string? Audience { get;  set; }
-        public int ExpiryMinutes { get;  set; } =15;
-    }
+
+public class JwtSettings
+{
+    public string? Secret { get; set; }
+    public string? Issuer { get; set; }
+    public string? Audience { get;  set; }
+    public int ExpiryMinutes { get;  set; } =15;
 }

@@ -1,7 +1,6 @@
-namespace Tasky.Services.Identities.Application.Commands
+namespace Tasky.Services.Identities.Application.Commands;
+
+public interface ICommand<TResponse>
 {
-    public interface ICommand<TResponse>
-    {
-    
-    }
+
 }
