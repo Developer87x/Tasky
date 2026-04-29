@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tasky.Services.Identities.Application.Commands;
 using Tasky.Services.Identities.Application.Commands.CreateUserCommands;
+using Tasky.Services.Identities.Application.Commands.UpdateUserCommands;
 using Tasky.Services.Identities.Application.Dtos;
 using Tasky.Services.Identities.Application.Queries;
 
@@ -12,9 +13,8 @@ namespace Tasky.Services.Identities.API.Controllers;
 [Authorize]
 public class UsersController(ICommandDispatcher dispatcher,IUserQueries userQueries) : ControllerBase
 {
-
-    [HttpPost("create")]
     [AllowAnonymous]
+    [HttpPost("create")]
     public async Task<IActionResult> Post([FromBody] CreateUserCommand command)
     {
         var result = await dispatcher.Send(command);
@@ -28,5 +28,10 @@ public class UsersController(ICommandDispatcher dispatcher,IUserQueries userQuer
         return Ok(list);
     }
 
-
+    [HttpPost("Update")]
+    public async Task<IActionResult> Update([FromBody] UpdateUserCommand command)
+    {
+        var result = await dispatcher.Send(command);
+        return Ok(result);
+    }
 }

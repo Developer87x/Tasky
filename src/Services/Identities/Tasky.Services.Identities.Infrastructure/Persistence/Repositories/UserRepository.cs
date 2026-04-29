@@ -17,12 +17,13 @@ public class UserRepository(IdentityDb db) : IUserRepository
         return entry.Entity;
     }
 
-    public Task<User?> GetByIdAsync(Guid id)
+    public async Task<User?> GetByIdAsync(Guid id)
     {
-        return _db.Users.
+        var userId = UserId.From(id);
+        return await _db.Users.
         Include(s => s.RefreshTokens).
         Include(s => s.Roles).
-        FirstOrDefaultAsync(u => u.Id.Value == id);
+        FirstOrDefaultAsync(u => u.Id.Equals(userId));
     }
     public async Task<User?> GetByUserNameAsync(string userName)
     {
