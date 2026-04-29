@@ -6,8 +6,3 @@ public class UserDto
     public string? Email { get; set; }
     public List<RoleDto>? Roles { get; set; }
 }
-
-public class RoleDto
-{
-    public string? RoleName { get; set; }
-}
