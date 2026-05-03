@@ -1,4 +1,5 @@
 using Tasky.Services.Identities.Domain.DomainEvents;
+using Tasky.Services.Identities.Domain.Exceptions;
 using Tasky.Services.Identities.Domain.SharedKernel;
 using Tasky.Services.Identities.Domain.ValueObjects;
 
@@ -28,7 +29,7 @@ public class User : AggregateRoot<User, UserId>
         IsActive = false;
         CreatedAt = createdAt;
         UpdatedAt = updatedAt;
-        AddDomainEvent(new CreatedUserDomainEvent(Id)); 
+        AddDomainEvent(new UserCreatedDomainEvent(Id)); 
     }
 
     public static User Create(Email email, string? userName, Password password) => new(UserId.NewId(), email, userName, password, DateTime.UtcNow, null);
@@ -37,6 +38,7 @@ public class User : AggregateRoot<User, UserId>
     {
         IsActive = true;
         UpdatedAt = DateTime.UtcNow;
+        AddDomainEvent(new UserActiviatedDomainEvent(Id));
     }
     public void Deactivate()
     {
@@ -57,6 +59,7 @@ public class User : AggregateRoot<User, UserId>
             _roles.Add(role);
             UpdatedAt = DateTime.UtcNow;
         }
+        throw new DomainException("Role already assigned to user.");
     }
 
     public RefreshToken AddRefreshToken()

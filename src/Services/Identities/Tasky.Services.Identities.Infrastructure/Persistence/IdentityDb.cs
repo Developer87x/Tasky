@@ -12,13 +12,14 @@ public const string DEFAULT_SCHEMA = "identities";
 public DbSet<User> Users { get; set; }
 public DbSet<Role> Roles { get; set; }
 public DbSet<RefreshToken> RefreshTokens { get; set; }
+public DbSet<Permission> Permissions { get; set; }
 
     public  async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default)
     {
 
         //get all domain events from the tracked entities
         var domainEntities = ChangeTracker.Entries<IAggregateRoot>()
-            .Where(e => e.Entity.DomainEvents != null && e.Entity.DomainEvents.Any())
+            .Where(e => e.Entity.DomainEvents != null && e.Entity.DomainEvents.Count > 0)
             .Select(e => e.Entity)
             .ToList();
         var domainEvents = domainEntities.SelectMany(e => e.DomainEvents)
@@ -44,5 +45,7 @@ public DbSet<RefreshToken> RefreshTokens { get; set; }
         modelBuilder.ApplyConfiguration(new UserEntityConfiguration());
         modelBuilder.ApplyConfiguration(new RoleEntityConfiguration()); 
         modelBuilder.ApplyConfiguration(new RefreshTokenEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new PermissionEntityConfiguration());
+        
     }
 }

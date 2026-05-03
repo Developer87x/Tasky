@@ -1,5 +1,4 @@
 using Tasky.Services.Identities.Application.Dtos;
-using Tasky.Services.Identities.Domain.Entities;
 
 namespace Tasky.Services.Identities.Application.Commands.UpdateUserCommands;
 

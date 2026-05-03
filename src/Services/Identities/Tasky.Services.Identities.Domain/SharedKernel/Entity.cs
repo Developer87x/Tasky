@@ -1,5 +1,3 @@
-using Tasky.Services.Identities.Domain.Entities;
-
 namespace Tasky.Services.Identities.Domain.SharedKernel;
 
 public class Entity<T> : IEntity<T>

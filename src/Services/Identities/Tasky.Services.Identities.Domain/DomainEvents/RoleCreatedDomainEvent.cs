@@ -3,9 +3,9 @@ using Tasky.Services.Identities.Domain.SharedKernel;
 
 namespace Tasky.Services.Identities.Domain.DomainEvents;
 
-public class CreatedUserDomainEvent(UserId id) : IDomainEvent
+public class RoleCreatedDomainEvent(RoleId id) : IDomainEvent
 {
-    public UserId Id { get; set; } = id;
+    public RoleId Id { get; set; } = id;
     public DateTime DateOccurred { get; private set; } = DateTime.UtcNow;
 
     public int Version => throw new NotImplementedException();
