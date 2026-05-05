@@ -5,9 +5,15 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0.202-alpine3.23-amd64 AS build
 WORKDIR /src
+
+
 COPY "Tasky.slnx" "Tasky.slnx"
 
+
 COPY "Gateways/Tasky.Gateways.API/Tasky.Gateways.API.csproj" "Gateways/Tasky.Gateways.API/Tasky.Gateways.API.csproj"
+
+
+#copy identites files 
 
 
 COPY "Services/Identities/Tasky.Services.Identities.Domain/Tasky.Services.Identities.Domain.csproj" "Services/Identities/Tasky.Services.Identities.Domain/Tasky.Services.Identities.Domain.csproj"
@@ -23,13 +29,12 @@ COPY "NuGet.config" "NuGet.config"
 RUN dotnet restore "Tasky.slnx"
 
 COPY . .
-WORKDIR /src/Services/Identities/Tasky.Services.Identities.API
+WORKDIR /src/Gateways/Tasky.Gateways.API
 RUN dotnet publish  -c Release -o /app
-
 FROM build AS publish
 
 FROM base AS final
 WORKDIR /app
 
 COPY --from=publish /app .
-ENTRYPOINT [ "dotnet","Tasky.Services.Identities.API.dll" ]
+ENTRYPOINT [ "dotnet","Tasky.Gateways.API.dll" ]

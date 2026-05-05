@@ -16,7 +16,7 @@ public class UserQueries(string connectionString) : IUserQueries
         var totalCount = connection.ExecuteScalar<int>("SELECT COUNT(*) FROM identities.users");
         var userDict = new Dictionary<string, UserDto>();
         await connection.QueryAsync<UserDto, RoleDto, UserDto>(
-            "SELECT usr.email, usr.username as UserName, r.role_name As RoleName FROM identities.users usr JOIN identities.user_roles ur ON ur.user_id = usr.id JOIN identities.roles r ON r.id = ur.role_id LIMIT @PageSize OFFSET @Offset",
+            "SELECT usr.email, usr.username as UserName, r.role_name As RoleName FROM (SELECT id, email, username FROM identities.users LIMIT @PageSize OFFSET @Offset) usr JOIN identities.user_roles ur ON ur.user_id = usr.id JOIN identities.roles r ON r.id = ur.role_id",
             (user, role) =>
             {
                 if (!userDict.TryGetValue(user.Email!, out var entry))

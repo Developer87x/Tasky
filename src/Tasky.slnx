@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Gateways/">
+    <Project Path="Gateways/Tasky.Gateways.API/Tasky.Gateways.API.csproj" />
+  </Folder>
   <Folder Name="/Services/" />
   <Folder Name="/Services/Identities/">
     <Project Path="Services/Identities/Tasky.Services.Identities.API/Tasky.Services.Identities.API.csproj" />

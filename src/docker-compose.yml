@@ -8,6 +8,17 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
+  gateways:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+    build:
+      context: .
+      dockerfile: Gateways/Tasky.Gateways.API/Dockerfile
+    ports:
+      - "5100:80"
+    depends_on:
+      - identities
 
   identities:
     environment:

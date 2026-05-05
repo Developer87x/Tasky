@@ -14,9 +14,11 @@ public class PaginationDto<T>
 
 public class PaginationRequestDto
 {
+    private int _page = 1;
     private const int MaxPageSize = 100;
     private int _pageSize = 10;
-    public int Page { get; set; } = 1;
+    public int Page { get=> _page; set => _page = (value < 1) ? 1 : value; }
+
     public int PageSize 
     { 
         get => _pageSize; 
