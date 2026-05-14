@@ -13,7 +13,7 @@ namespace Tasky.Services.Identities.Infrastructure.Services;
 
 public class TokenService(IOptions<JwtSettings> options) : ITokenService
 {
-    private readonly JwtSettings _jwtSettings =options.Value;
+    private readonly JwtSettings _jwtSettings = options.Value;
     public string GenerateToken(User user)
     {
         // Implement your token generation logic here, e.g., using JWT  
@@ -24,11 +24,15 @@ public class TokenService(IOptions<JwtSettings> options) : ITokenService
             new (ClaimTypes.Name, user.UserName!),
             new (ClaimTypes.Email, user.Email!.Value!),
         };
-
-        foreach (var role in user.Roles)
+        var roles = user.Roles.Select(r => r.RoleName).Distinct();
+        foreach (var role in roles)
         {
-            claims.Add(new Claim(ClaimTypes.Role, role.RoleName!));
+            claims.Add(new Claim(ClaimTypes.Role, role!));
         }
+        var permissions = user.Roles.SelectMany(r => r.Permissions).Select(p => p.PermissionName).Distinct();
+        foreach (var permission in permissions)
+            claims.Add(new Claim("Permission", permission!));
+        
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret!));
         var token = new JwtSecurityToken(
             issuer: _jwtSettings.Issuer,

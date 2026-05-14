@@ -8,28 +8,7 @@ using Tasky.Services.Identities.Application.Queries;
 namespace Tasky.Services.Identities.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
-public class UsersController(ICommandDispatcher dispatcher,IUserQueries userQueries) : ControllerBase
-{
-    [AllowAnonymous]
-    [HttpPost("create")]
-    public async Task<IActionResult> Post([FromBody] CreateUserCommand command)
-    {
-        var result = await dispatcher.Send(command);
-        return Ok(result);
-    }
-    [HttpGet("users-list")]
-    public async Task<IActionResult> GetAllUsers([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
-    {
-        var pagination = new PaginationRequestDto { Page = page, PageSize = pageSize };
-        var list =await userQueries.GetAllUserAsync(pagination);
-        return Ok(list);
-    }
 
-    [HttpPost("Update")]
-    public async Task<IActionResult> Update([FromBody] UpdateUserCommand command)
-    {
-        var result = await dispatcher.Send(command);
-        return Ok(result);
-    }
+public class UsersController : ControllerBase
+{
 }

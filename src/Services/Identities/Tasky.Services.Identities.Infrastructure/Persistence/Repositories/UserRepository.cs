@@ -30,6 +30,7 @@ public class UserRepository(IdentityDb db) : IUserRepository
         return await _db.Users.
         Include(s => s.RefreshTokens).
         Include(s => s.Roles).
+            ThenInclude(r => r.Permissions).
         FirstOrDefaultAsync(u => u.UserName == userName);
     }
 

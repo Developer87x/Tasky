@@ -54,3 +54,6 @@ TestResult.xml
 nunit-*.xml
 **/**/Data/
 **.log
+
+.git/
+.idea

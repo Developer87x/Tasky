@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Tasky.Services.Identities.Application.Services;
 using Tasky.Services.Identities.Domain.Repositories;
+using Tasky.Services.Identities.Infrastructure.Configurations.Middlewares.Handlers;
+using Tasky.Services.Identities.Infrastructure.Configurations.Middlewares.Providers;
 using Tasky.Services.Identities.Infrastructure.Persistence;
 using Tasky.Services.Identities.Infrastructure.Persistence.Repositories;
 using Tasky.Services.Identities.Infrastructure.Services;
@@ -35,6 +38,8 @@ public static class DatabaseExtension
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<ITokenService, TokenService>();
+        services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
+        services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
         return services;
     }
 
