@@ -11,22 +11,26 @@ public class RefreshTokenCommandHandler
     IRefreshTokenRepository refreshTokenRepository,
     ITokenService tokenService
 
-) : ICommandHandler<RefreshTokenCommand, LoginResultDto>
+) : ICommandHandler<RefreshTokenCommand, ResultCommand<LoginCommandResult>>
 {
 
-    public async Task<LoginResultDto> Handle(RefreshTokenCommand command)
+    public async Task<ResultCommand<LoginCommandResult>> Handle(RefreshTokenCommand command)
     {
         var refreshToken = await refreshTokenRepository.GetByTokenAsync(command.Token!);
         if (refreshToken == null || !refreshToken.IsActive)
             throw new UnauthorizedException("Invalid refresh token");
         var user = await userRepository.GetByIdAsync(refreshToken.UserId.Value) ?? throw new NotFoundException("User not found");
         refreshToken.Revoke();
-            var newRefreshToken = user.AddRefreshToken();
-            await refreshTokenRepository.UnitOfWork.SaveEntitiesAsync();
-            return new LoginResultDto
+        var newRefreshToken = user.AddRefreshToken();
+        await refreshTokenRepository.UnitOfWork.SaveEntitiesAsync();
+        return new()
+        {
+            IsSuccess = true,
+            Data = new()
             {
                 AccessToken = tokenService.GenerateToken(user),
-                RefreshToken = newRefreshToken.RawToken
-            };
+                RefreshToken = newRefreshToken.Token
+            }
+        };
     }
 }

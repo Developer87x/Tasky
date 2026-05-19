@@ -8,10 +8,10 @@ namespace Tasky.Services.Identities.Application.Commands.UpdateUserCommands;
 public class UpdateUserCommandHandler
 (
     IUserRepository userRepository
-) : ICommandHandler<UpdateUserCommand, ResultDto<UpdateUserResultDto>>
+) : ICommandHandler<UpdateUserCommand, ResultCommand<UpdateUserCommandResult>>
 {
     
-    public async Task<ResultDto<UpdateUserResultDto>> Handle(UpdateUserCommand command)
+    public async Task<ResultCommand<UpdateUserCommandResult>> Handle(UpdateUserCommand command)
     {
         var user= await userRepository.GetByIdAsync(Guid.Parse(command.UserId)) ?? throw new NotFoundException("User not found.");
         if (!string.IsNullOrEmpty(command.Email))
@@ -19,19 +19,19 @@ public class UpdateUserCommandHandler
             user.UpdateEmail(Email.Create(command.Email));
         }
         await userRepository.UnitOfWork.SaveEntitiesAsync();
-        return new ResultDto<UpdateUserResultDto>
+        return new ()
         {
             IsSuccess = true,
-            Data = new UpdateUserResultDto
+            Data = new ()
             {
                 User = new UserDto
                 {
                     UserName = user.UserName,
                     Email = user.Email?.Value,
-                    Roles = user.Roles.Select(r => new RoleDto
+                    Roles = [.. user.Roles.Select(r => new RoleDto
                     {
                         RoleName = r.RoleName
-                    }).ToList()
+                    })]
                 }
             }
         };
