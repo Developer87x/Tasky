@@ -5,7 +5,7 @@ using Tasky.Services.Identities.Domain.Repositories;
 
 namespace Tasky.Services.Identities.Application.Commands.CreatePermissionCommands;
 
-public class CreatePermissionCommandHandler : ICommandHandler<CreatePermissionCommand, ResultDto<PermissionResultDto>>
+public class CreatePermissionCommandHandler : ICommandHandler<CreatePermissionCommand, ResultCommand<CreatePermissionResult>>
 {
     private readonly IPermissionRepository _permissionRepository;
 
@@ -14,17 +14,17 @@ public class CreatePermissionCommandHandler : ICommandHandler<CreatePermissionCo
         _permissionRepository = permissionRepository;
     }
 
-    public async Task<ResultDto<PermissionResultDto>> Handle(CreatePermissionCommand command)
+    public async Task<ResultCommand<CreatePermissionResult>> Handle(CreatePermissionCommand command)
     {
         var isPermissionExist = await _permissionRepository.GetByNameAsync(command.PermissionName!) ??
             throw new BadRequestException("Permission with the same name already exists.");
         var permission = Permission.Create(command.PermissionName!);
         await _permissionRepository.AddAsync(permission);
-        await _permissionRepository.UnitOfWork.SaveEntitiesAsync();
-        return new ResultDto<PermissionResultDto>
+        await _permissionRepository.UnitOfWork.SaveEntitiesAsync() ;
+        return new ()
         {
             IsSuccess = true,
-            Data = new PermissionResultDto
+            Data = new ()
             {
                 Permission = permission.PermissionName
             }
