@@ -16,7 +16,8 @@ public class CreatePermissionCommandHandler : ICommandHandler<CreatePermissionCo
 
     public async Task<ResultCommand<CreatePermissionResult>> Handle(CreatePermissionCommand command)
     {
-        var isPermissionExist = await _permissionRepository.GetByNameAsync(command.PermissionName!) ??
+        var isPermissionExist = await _permissionRepository.GetByNameAsync(command.PermissionName!);
+        if(isPermissionExist is not null)   
             throw new BadRequestException("Permission with the same name already exists.");
         var permission = Permission.Create(command.PermissionName!);
         await _permissionRepository.AddAsync(permission);
@@ -24,9 +25,10 @@ public class CreatePermissionCommandHandler : ICommandHandler<CreatePermissionCo
         return new ()
         {
             IsSuccess = true,
+            Message = "Permission created successfully.",
             Data = new ()
             {
-                Permission = permission.PermissionName
+                PermissionId = permission.Id.Value
             }
         };
     }

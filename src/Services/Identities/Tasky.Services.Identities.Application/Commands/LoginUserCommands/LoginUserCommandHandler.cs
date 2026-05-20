@@ -10,9 +10,9 @@ public class LoginUserCommandHandler(
     IUserRepository userRepository,
     IPasswordHasher passwordHasher,
     ITokenService tokenSerive
-) : ICommandHandler<LoginUserCommand, ResultDto<LoginResultDto>>
+) : ICommandHandler<LoginUserCommand, ResultCommand<LoginCommandResult>>
 {
-    public async Task<ResultDto<LoginResultDto>> Handle(LoginUserCommand command)
+    public async Task<ResultCommand<LoginCommandResult>> Handle(LoginUserCommand command)
     {
         var user = await userRepository.GetByUserNameAsync(command.UserName!) ?? 
             throw new UnauthorizedException("Invalid username or password.");
@@ -24,10 +24,10 @@ public class LoginUserCommandHandler(
         var accessToken = tokenSerive.GenerateToken(user);
         var refreshToken = user.AddRefreshToken();
         await userRepository.UnitOfWork.SaveEntitiesAsync();
-        return new ResultDto<LoginResultDto>
+        return new ()
         {
             IsSuccess = true,
-            Data = new LoginResultDto
+            Data = new ()
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken.RawToken

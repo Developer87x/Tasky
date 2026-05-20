@@ -10,7 +10,7 @@ namespace Tasky.Services.Identities.Infrastructure.Configurations.Middlewares.Pr
 {
     public class PermissionPolicyProvider(IOptions<AuthorizationOptions> options):DefaultAuthorizationPolicyProvider(options)
     {
-        public override async Task<AuthorizationPolicy> GetPolicyAsync(string policyName)
+        public override async Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
         {
             var policy = await base.GetPolicyAsync(policyName);
             if (policy is not null)

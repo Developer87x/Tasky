@@ -9,7 +9,7 @@ public class UserQueries(string connectionString) : IUserQueries
 
     private readonly string _connectionString = string.IsNullOrWhiteSpace(connectionString) ? throw new ArgumentNullException(nameof(connectionString)) : connectionString;
 
-    public async Task<PaginationDto<UserDto>> GetAllUserAsync(PaginationRequestDto paginationRequest)
+    public async Task<Pagination<UserDto>> GetAllUserAsync(PaginationRequest paginationRequest)
     {
         using var connection = new NpgsqlConnection(_connectionString);
         connection.Open();
@@ -30,7 +30,7 @@ public class UserQueries(string connectionString) : IUserQueries
             },
             new { Offset = paginationRequest.Offset, PageSize = paginationRequest.PageSize },
             splitOn: "RoleName");
-        return new PaginationDto<UserDto>
+        return new ()
         {
             Items = [.. userDict.Values],
             TotalCount = totalCount,

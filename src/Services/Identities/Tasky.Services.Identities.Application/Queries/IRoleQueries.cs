@@ -4,6 +4,6 @@ namespace Tasky.Services.Identities.Application.Queries;
 
 public interface IRoleQueries
 {
-    Task<PaginationDto<RoleDto>> GetAllRolesAsync(PaginationRequestDto paginationRequest);
+    Task<Pagination<RoleDto>> GetAllRolesAsync(PaginationRequest paginationRequest);
 
 }

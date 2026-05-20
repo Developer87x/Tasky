@@ -16,14 +16,14 @@ public class RoleQueries(string connectionString) : IRoleQueries
         return [.. roleList];
     }
 
-    public async Task<PaginationDto<RoleDto>> GetAllRolesAsync(PaginationRequestDto paginationRequest)
+    public async Task<Pagination<RoleDto>> GetAllRolesAsync(PaginationRequest paginationRequest)
     {
         using var connection = new NpgsqlConnection(_connectionString);
         connection.Open();
         var totalCount = connection.ExecuteScalar<int>("SELECT COUNT(*) FROM identities.roles");
         var roles = await connection.QueryAsync<RoleDto>("SELECT role_name as RoleName FROM identities.roles ORDER BY role_name OFFSET @Offset LIMIT @PageSize", new { Offset = paginationRequest.Offset, PageSize = paginationRequest.PageSize });
 
-        return new PaginationDto<RoleDto>
+        return new Pagination<RoleDto>
         {
             Items = [.. roles],
             TotalCount = totalCount,
