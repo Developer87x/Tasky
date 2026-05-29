@@ -9,4 +9,12 @@
     <Project Path="Services/Identities/Tasky.Services.Identities.Domain/Tasky.Services.Identities.Domain.csproj" />
     <Project Path="Services/Identities/Tasky.Services.Identities.Infrastructure/Tasky.Services.Identities.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/Services/Projects/">
+    <Project Path="Services/Projects/Tasky.Services.Projects.API/Tasky.Services.Projects.API.csproj" />
+    <Project Path="Services/Projects/Tasky.Services.Projects.Domain/Tasky.Services.Projects.Domain.csproj" />
+    <Project Path="Services/Projects/Tasky.Services.Projects.Infrastructure/Tasky.Services.Projects.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Services/Projects/Tasky.Services.Projects.Application/">
+    <Project Path="Services/Projects/Tasky.Services.Projects.Application/Tasky.Services.Projects.Application.csproj" />
+  </Folder>
 </Solution>
