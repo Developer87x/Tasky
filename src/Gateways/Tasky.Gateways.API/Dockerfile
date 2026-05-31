@@ -22,6 +22,14 @@ COPY "Services/Identities/Tasky.Services.Identities.Infrastructure/Tasky.Service
 COPY "Services/Identities/Tasky.Services.Identities.API/Tasky.Services.Identities.API.csproj" "Services/Identities/Tasky.Services.Identities.API/Tasky.Services.Identities.API.csproj"
 
 
+# copy Projects files
+COPY "Services/Projects/Tasky.Services.Projects.API/Tasky.Services.Projects.API.csproj" "Services/Projects/Tasky.Services.Projects.API/Tasky.Services.Projects.API.csproj"
+COPY "Services/Projects/Tasky.Services.Projects.Infrastructure/Tasky.Services.Projects.Infrastructure.csproj" "Services/Projects/Tasky.Services.Projects.Infrastructure/Tasky.Services.Projects.Infrastructure.csproj"
+COPY "Services/Projects/Tasky.Services.Projects.Application/Tasky.Services.Projects.Application.csproj" "Services/Projects/Tasky.Services.Projects.Application/Tasky.Services.Projects.Application.csproj"
+COPY "Services/Projects/Tasky.Services.Projects.Domain/Tasky.Services.Projects.Domain.csproj" "Services/Projects/Tasky.Services.Projects.Domain/Tasky.Services.Projects.Domain.csproj"
+
+
+
 COPY "NuGet.config" "NuGet.config"
 
 

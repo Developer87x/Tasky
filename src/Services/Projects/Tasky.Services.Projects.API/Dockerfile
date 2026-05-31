@@ -25,3 +25,22 @@ COPY "Services/Projects/Tasky.Services.Projects.API/Tasky.Services.Projects.API.
 COPY "Services/Projects/Tasky.Services.Projects.Infrastructure/Tasky.Services.Projects.Infrastructure.csproj" "Services/Projects/Tasky.Services.Projects.Infrastructure/Tasky.Services.Projects.Infrastructure.csproj"
 COPY "Services/Projects/Tasky.Services.Projects.Application/Tasky.Services.Projects.Application.csproj" "Services/Projects/Tasky.Services.Projects.Application/Tasky.Services.Projects.Application.csproj"
 COPY "Services/Projects/Tasky.Services.Projects.Domain/Tasky.Services.Projects.Domain.csproj" "Services/Projects/Tasky.Services.Projects.Domain/Tasky.Services.Projects.Domain.csproj"
+
+
+COPY "NuGet.config" "NuGet.config"
+
+
+
+RUN dotnet restore "Tasky.slnx"
+
+COPY . .
+WORKDIR /src/Services/Projects/Tasky.Services.Projects.API
+RUN dotnet publish  -c Release -o /app
+
+FROM build AS publish
+
+FROM base AS final
+WORKDIR /app
+
+COPY --from=publish /app .
+ENTRYPOINT [ "dotnet","Tasky.Services.Projects.API.dll" ]

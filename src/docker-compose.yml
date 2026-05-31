@@ -1,4 +1,4 @@
-services:
+services :
   postgres:
     image: postgres:12.2-alpine
     ports:
@@ -33,6 +33,19 @@ services:
       - "5102:80"
     depends_on:
       - postgres
+  projects:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+      - PORT=80
+    build:
+      context: .
+      dockerfile: Services/Projects/Tasky.Services.Projects.API/Dockerfile
+    ports:
+      - "5103:80"
+    depends_on:
+      - postgres
+  
 volumes:
   postgres_data:
     driver: local
