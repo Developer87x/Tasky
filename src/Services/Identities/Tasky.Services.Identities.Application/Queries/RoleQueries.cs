@@ -32,12 +32,20 @@ public class RoleQueries(string connectionString) : IRoleQueries
         };
     }
 
-    public async Task<RoleDto> GetRoleByNameAsync(string roleName)
+    public async Task<RoleDto?> GetRoleById(Guid id)
+    {
+        using var connection = new NpgsqlConnection(_connectionString);
+        connection.Open();
+        var role = await connection.QueryFirstOrDefaultAsync<RoleDto>("SELECT role_name as RoleName FROM identities.roles WHERE id = @Id", new { Id = id });
+        return role;
+    }
+
+    public async Task<RoleDto?> GetRoleByNameAsync(string roleName)
     {
         using var connection = new NpgsqlConnection(_connectionString);
         connection.Open();
         var role = await connection.QueryFirstOrDefaultAsync<RoleDto>("SELECT  role_name as RoleName FROM identities.roles WHERE role_name = @RoleName", new { RoleName = roleName });
-        return role!;
+        return role;
     }
 
 }

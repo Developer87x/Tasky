@@ -24,8 +24,8 @@ services.AddJwt(configuration);                          //Registers JWT authent
 services.AddRateLimiting();                              //Registers rate limiting services
 services.AddAuthorizationBuilder()                       //Registers authorization services and policies
         .SetFallbackPolicy(new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder()
-            .RequireAuthenticatedUser()
-            .Build());
+        .RequireAuthenticatedUser()
+        .Build());
         
 
 var app = builder.Build();

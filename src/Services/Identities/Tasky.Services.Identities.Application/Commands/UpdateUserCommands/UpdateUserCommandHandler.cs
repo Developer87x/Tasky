@@ -22,6 +22,7 @@ public class UpdateUserCommandHandler
         return new ()
         {
             IsSuccess = true,
+            Message = "User has updated successfully.",
             Data = new ()
             {
                 User = new UserDto

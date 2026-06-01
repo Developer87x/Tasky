@@ -17,6 +17,12 @@ public class RoleRepository(IdentityDb db) : IRoleRepository
         return entry.Entity;
     }
 
+    public Task<Role?> GetByIdAsync(Guid id)
+    {
+        var role = _db.Roles.FirstOrDefaultAsync(r => r.Id.Value == id);
+        return role;
+    }
+
     public async Task<Role?> GetByNameAsync(string name)
     {
         var role = await _db.Roles.FirstOrDefaultAsync(r => r.RoleName == name);

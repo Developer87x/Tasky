@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Tasky.Services.Identities.Application.Commands;
 using Tasky.Services.Identities.Application.Commands.CreateUserCommands;
+using Tasky.Services.Identities.Application.Commands.UpdateUserCommands;
 using Tasky.Services.Identities.Application.Dtos;
 using Tasky.Services.Identities.Application.Queries;
-using Tasky.Services.Identities.Domain.Entities;
 using Tasky.Services.Identities.Infrastructure.Configurations.ServicesExtensions;
 namespace Tasky.Services.Identities.API.Controllers;
+
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
@@ -32,7 +33,6 @@ public class UsersController(ILogger<UsersController> logger, ICommandDispatcher
     [HttpGet("users-list")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [AllowAnonymous]
     public async Task<IActionResult> GetUsersList([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
         _logger.LogInformation("Received request to get users list with pagination: page={page}, pageSize={pageSize}", page, pageSize);
@@ -44,7 +44,6 @@ public class UsersController(ILogger<UsersController> logger, ICommandDispatcher
     [HttpGet("user/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [AllowAnonymous]
     public async Task<IActionResult> GetUserById(Guid id)
     {
         _logger.LogInformation("Received request to get user by id: {id}", id);
@@ -56,6 +55,16 @@ public class UsersController(ILogger<UsersController> logger, ICommandDispatcher
         }
         _logger.LogInformation("User with id {id} retrieved successfully", id);
         return Ok(user);
+    }
+    [HttpPost("update")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateUser([FromBody] UpdateUserCommand command)
+    {
+        _logger.LogInformation("Received request to update user with id: {id}", command.UserId);
+        var result = await _commandDispatcher.Send(command);
+        _logger.LogInformation("User update result for id {id}: {result}", command.UserId, result);
+        return Ok(result);
     }
 
 }

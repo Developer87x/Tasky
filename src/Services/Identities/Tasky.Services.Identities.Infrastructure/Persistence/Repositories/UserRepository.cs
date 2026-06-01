@@ -44,4 +44,10 @@ public class UserRepository(IdentityDb db) : IUserRepository
     {
         return _db.Users.AnyAsync(u => u.UserName == userName);
     }
+
+    public async Task<User> UpdateAsync(User user)
+    {
+        var updedEnitiy = _db.Users.Update(user);
+        return updedEnitiy.Entity;
+    }
 }

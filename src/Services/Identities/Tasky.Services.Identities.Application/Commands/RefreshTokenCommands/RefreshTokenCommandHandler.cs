@@ -29,7 +29,7 @@ public class RefreshTokenCommandHandler
             Data = new()
             {
                 AccessToken = tokenService.GenerateToken(user),
-                RefreshToken = newRefreshToken.Token
+                RefreshToken = newRefreshToken.RawToken
             }
         };
     }
