@@ -50,6 +50,7 @@ public class User : AggregateRoot<User, UserId>
     {
         Email= email;
         UpdatedAt = DateTime.UtcNow;
+        AddDomainEvent(new UserEmailUpdatedDomainEvent(Id));
     }
 
     public void AddRole(Role role)
@@ -62,6 +63,13 @@ public class User : AggregateRoot<User, UserId>
         throw new DomainException("Role already assigned to user.");
     }
 
+
+    public void UpdatePassword(Password password)
+    {
+        Password = password;
+        UpdatedAt = DateTime.UtcNow;
+        AddDomainEvent(new UserPasswordUpdatedDomainEvent(Id));
+    }
     public RefreshToken AddRefreshToken()
     {
         foreach (var token in _refreshTokens)

@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Tasky.Services.Identities.Application.Commands;
+using Tasky.Services.Identities.Application.Commands.ChangePasswordCommands;
 using Tasky.Services.Identities.Application.Commands.CreateUserCommands;
 using Tasky.Services.Identities.Application.Commands.UpdateUserCommands;
 using Tasky.Services.Identities.Application.Dtos;
@@ -64,6 +64,16 @@ public class UsersController(ILogger<UsersController> logger, ICommandDispatcher
         _logger.LogInformation("Received request to update user with id: {id}", command.UserId);
         var result = await _commandDispatcher.Send(command);
         _logger.LogInformation("User update result for id {id}: {result}", command.UserId, result);
+        return Ok(result);
+    }
+    [HttpPut("change-password")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand command)
+    {
+        _logger.LogInformation("Received request to change password for user with id: {id}", command.UserId);
+        var result = await _commandDispatcher.Send(command);
+        _logger.LogInformation("Password change result for user id {id}: {result}", command.UserId, result);
         return Ok(result);
     }
 
