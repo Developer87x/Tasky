@@ -56,10 +56,10 @@ public class UsersController(ILogger<UsersController> logger, ICommandDispatcher
         _logger.LogInformation("User with id {id} retrieved successfully", id);
         return Ok(user);
     }
-    [HttpPost("update")]
+    [HttpPut("update-email")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdateUser([FromBody] UpdateUserCommand command)
+    public async Task<IActionResult> UpdateUser([FromBody] UpdateUserEmailCommand command)
     {
         _logger.LogInformation("Received request to update user with id: {id}", command.UserId);
         var result = await _commandDispatcher.Send(command);

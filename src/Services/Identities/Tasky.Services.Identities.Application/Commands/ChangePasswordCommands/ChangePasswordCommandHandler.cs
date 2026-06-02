@@ -44,7 +44,7 @@ public class ChangePasswordCommandHandler(IUserRepository userRepository,IPasswo
             Message = "Password changed successfully",
             Data = new ChangePasswordResult
             {
-                UserId = user.Id.ToString()     
+                UserId = user.Id.Value.ToString()     
             }
         };
     }
