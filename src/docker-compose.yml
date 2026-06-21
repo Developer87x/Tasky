@@ -1,5 +1,7 @@
+name: tasky-application
 services :
   postgres:
+    container_name: postgres-server
     image: postgres:12.2-alpine
     ports:
       - "5432:5432"
@@ -9,6 +11,7 @@ services :
     volumes:
       - postgres_data:/var/lib/postgresql/data
   gateways:
+    container_name: tasky-application-gateway
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80
@@ -21,6 +24,7 @@ services :
       - identities
 
   identities:
+    container_name: tasky-identities-service
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80
@@ -34,6 +38,7 @@ services :
     depends_on:
       - postgres
   projects:
+    container_name: tasky-projects-service
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80

@@ -8,10 +8,10 @@ namespace Tasky.Services.Identities.Application.Commands.UpdateUserCommands;
 public class UpdateUserCommandHandler
 (
     IUserRepository userRepository
-) : ICommandHandler<UpdateUserCommand, ResultCommand<UpdateUserCommandResult>>
+) : ICommandHandler<UpdateUserEmailCommand, ResultCommand<UpdateUserEmailResult>>
 {
     
-    public async Task<ResultCommand<UpdateUserCommandResult>> Handle(UpdateUserCommand command)
+    public async Task<ResultCommand<UpdateUserEmailResult>> Handle(UpdateUserEmailCommand command)
     {
         var user= await userRepository.GetByIdAsync(Guid.Parse(command.UserId)) ?? throw new NotFoundException("User not found.");
         if (!string.IsNullOrEmpty(command.Email))

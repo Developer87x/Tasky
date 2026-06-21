@@ -4,5 +4,3 @@ public interface IEntity<IKentity>
 {
     IKentity Id { get; }
 }
-
-

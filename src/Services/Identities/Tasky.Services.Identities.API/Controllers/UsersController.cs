@@ -21,11 +21,11 @@ public class UsersController(ILogger<UsersController> logger, ICommandDispatcher
     private readonly IUserQueries _userQueries = userQueries;
 
     [HttpPost("Create")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command)
     {
-        _logger.LogInformation("Received request to create a new user with email: {user}", command);
+        _logger.LogInformation("Received request to create a new user with email: {user}", command.Email);
         var result = await _commandDispatcher.Send(command);
         _logger.LogInformation("User creation result: {result}", result);
         return Ok(result);

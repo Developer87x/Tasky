@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Tasky.Services.Identities.Application.Commands;
 using Tasky.Services.Identities.Application.Commands.CreatePermissionCommands;
-using Tasky.Services.Identities.Application.Dtos;
-using Tasky.Services.Identities.Domain.Entities;
 using Tasky.Services.Identities.Infrastructure.Configurations.ServicesExtensions;
 
 namespace Tasky.Services.Identities.API.Controllers;
@@ -19,7 +17,8 @@ public class PermissionsController(ILogger<PermissionsController> logger, IComma
     private readonly ICommandDispatcher _commandDispatcher = commandDispatcher;
 
     [HttpPost("create")]
-    [AllowAnonymous]
+    [Authorize(Roles = "Admins")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> CreatePermission([FromBody] CreatePermissionCommand command)
     {
         _logger.LogInformation("Received request to create permission with name: {PermissionName}", command.PermissionName);
@@ -27,4 +26,5 @@ public class PermissionsController(ILogger<PermissionsController> logger, IComma
         _logger.LogInformation("Permission created successfully with ID: {PermissionId}", result?.Data?.PermissionId);
         return Ok(result);
     }
+
 }

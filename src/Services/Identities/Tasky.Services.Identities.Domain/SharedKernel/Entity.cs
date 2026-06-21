@@ -4,7 +4,7 @@ public class Entity<T> : IEntity<T>
 {
 
     public T Id { get; protected set; } =default!;
-    protected Entity() { }
+    private Entity() { }
     protected Entity(T id) : this() => Id = id;
 
 }

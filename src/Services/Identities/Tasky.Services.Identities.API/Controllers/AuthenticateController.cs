@@ -25,7 +25,7 @@ public class AuthenticateController(ILogger<AuthenticateController> logger, ICom
     {
         _logger.LogInformation("Received login request for user: {userName}", command.UserName);
         var result = await _dispatcher.Send(command);
-        _logger.LogInformation("Login result for user {userName}: {result}", command.UserName, result);
+        _logger.LogInformation("Login result for user {userName}: {result}", command.UserName, result.IsSuccess);
         return Ok(result);
     }
 
@@ -35,7 +35,9 @@ public class AuthenticateController(ILogger<AuthenticateController> logger, ICom
     [AllowAnonymous]
     public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenCommand command)
     {
+        _logger.LogInformation("Received refresh token request for user: {userName}", command);
         var result = await _dispatcher.Send(command);
+        _logger.LogInformation("Refresh token result for user : {result}",  result.IsSuccess );
         return Ok(result);
     }   
 }

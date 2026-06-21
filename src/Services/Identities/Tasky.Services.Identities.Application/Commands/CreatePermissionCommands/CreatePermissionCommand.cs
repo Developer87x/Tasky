@@ -4,5 +4,5 @@ namespace Tasky.Services.Identities.Application.Commands.CreatePermissionCommand
 
 public class CreatePermissionCommand :ICommand<ResultCommand<CreatePermissionResult>>
 {
-    public string? PermissionName { get; set; }
+    public string? PermissionName { get; set; } = string.Empty;
 }

@@ -1,6 +1,6 @@
 namespace Tasky.Services.Projects.Domain.SharedKernel;
 
-public interface IEntity<out Tkey>
+public interface IEntity<Tkey>
 {
     public  Tkey Id { get; }
 }

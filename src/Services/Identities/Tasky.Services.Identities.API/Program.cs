@@ -30,9 +30,9 @@ services.AddAuthorizationBuilder()                       //Registers authorizati
 
 var app = builder.Build();
 
-app.UseRateLimiting();                      //Enables rate limiting middleware
 app.UseMiddleware<ExceptionHandling>();     //Enables custom exception handling middleware
 app.UseLogging();                           //Enables request logging middleware
+app.UseRateLimiting();                      //Enables rate limiting middleware
 app.UseAuthentication();                    //Enables authentication middleware
 app.UseAuthorization();
 app.MapControllers();

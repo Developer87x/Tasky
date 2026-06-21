@@ -21,7 +21,7 @@ public class RolesController(ILogger<RolesController> logger, ICommandDispatcher
     private readonly IRoleQueries _roleQueries = roleQueries;
 
     [HttpPost("Create")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateRole([FromBody] CreateRoleCommand command)
     {
