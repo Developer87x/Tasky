@@ -1,6 +1,5 @@
 using Dapper;
 using Npgsql;
-using Tasky.Services.Identities.Application.Dtos;
 
 namespace Tasky.Services.Identities.Application.Queries;
 
