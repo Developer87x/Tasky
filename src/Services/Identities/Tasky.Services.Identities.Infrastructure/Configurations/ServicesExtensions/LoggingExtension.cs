@@ -6,17 +6,20 @@ namespace Tasky.Services.Identities.Infrastructure.Configurations.ServicesExtens
 public static class LoggingExtension
 {
 
-    public static void AddLogging(this WebApplicationBuilder builder)
+    extension(WebApplicationBuilder builder)
     {
-        builder.Host.UseSerilog((hostingContext, configuration) =>
+        public void AddLogging() => builder.Host.UseSerilog((hostingContext, configuration) =>
         {
             configuration.ReadFrom.Configuration(hostingContext.Configuration);
         });
     }
 
-    public static IApplicationBuilder UseLogging(this WebApplication app)
+    extension(WebApplication app)
     {
-        app.UseSerilogRequestLogging();
-        return app;
+        public IApplicationBuilder UseLogging()
+        {
+            app.UseSerilogRequestLogging();
+            return app;
+        }
     }
 }

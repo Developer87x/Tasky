@@ -4,7 +4,7 @@ namespace Tasky.Services.Identities.Domain.Repositories;
 
 public interface IRoleRepository : IRepository<Role>
 {
-    Task<Role?> GetByNameAsync(string name);
-    Task<Role> AddAsync(Role role);
-    Task<Role?> GetByIdAsync(Guid id);
+    Task<Role?> GetByNameAsync(string name, CancellationToken cancellationToken = default);
+    Task<Role> AddAsync(Role role, CancellationToken cancellationToken = default);
+    Task<Role?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 }

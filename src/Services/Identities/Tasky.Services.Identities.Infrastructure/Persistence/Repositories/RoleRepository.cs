@@ -11,21 +11,21 @@ public class RoleRepository(IdentityDb db) : IRoleRepository
 
     public IUnitOfWork UnitOfWork => _db; 
 
-    public async Task<Role> AddAsync(Role role)
+    public async Task<Role> AddAsync(Role role, CancellationToken cancellationToken = default)
     {
-        var entry = await _db.Roles.AddAsync(role);
+        var entry = await _db.Roles.AddAsync(role, cancellationToken);
         return entry.Entity;
     }
 
-    public Task<Role?> GetByIdAsync(Guid id)
+    public Task<Role?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default  )
     {
-        var role = _db.Roles.FirstOrDefaultAsync(r => r.Id.Value == id);
+        var role = _db.Roles.FirstOrDefaultAsync(r => r.Id.Value == id, cancellationToken);
         return role;
     }
 
-    public async Task<Role?> GetByNameAsync(string name)
+    public async Task<Role?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
     {
-        var role = await _db.Roles.FirstOrDefaultAsync(r => r.RoleName == name);
+        var role = await _db.Roles.FirstOrDefaultAsync(r => r.RoleName == name, cancellationToken );
         return role;
     }
 }

@@ -53,10 +53,10 @@ public static class DatabaseExtension
         var jwtSettingsSection = configuration.GetSection("JwtSettings");
         services.AddAuthentication(auth =>
         {
-            auth.DefaultAuthenticateScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
-            auth.DefaultChallengeScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
-            auth.DefaultForbidScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
-            auth.DefaultScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;  
+            auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            auth.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
+            auth.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;  
         }).AddJwtBearer(opt =>
         {
             opt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters

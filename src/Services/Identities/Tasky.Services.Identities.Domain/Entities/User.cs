@@ -29,7 +29,7 @@ public class User : AggregateRoot<User, UserId>
         IsActive = false;
         CreatedAt = createdAt;
         UpdatedAt = updatedAt;
-        AddDomainEvent(new UserCreatedDomainEvent(Id)); 
+        AddDomainEvent(new UserCreatedEvent(id, userName, email));
     }
 
     public static User Create(Email email, string? userName, Password password) => new(UserId.NewId(), email, userName, password, DateTime.UtcNow, null);
@@ -38,7 +38,6 @@ public class User : AggregateRoot<User, UserId>
     {
         IsActive = true;
         UpdatedAt = DateTime.UtcNow;
-        AddDomainEvent(new UserActiviatedDomainEvent(Id));
     }
     public void Deactivate()
     {
@@ -50,15 +49,15 @@ public class User : AggregateRoot<User, UserId>
     {
         Email= email;
         UpdatedAt = DateTime.UtcNow;
-        AddDomainEvent(new UserEmailUpdatedDomainEvent(Id));
     }
 
     public void AddRole(Role role)
     {
-        if (!_roles.Any(r => r.Id == role.Id))
+        if (!_roles.Contains(role))
         {
             _roles.Add(role);
             UpdatedAt = DateTime.UtcNow;
+            return;
         }
         throw new DomainException("Role already assigned to user.");
     }
@@ -68,7 +67,6 @@ public class User : AggregateRoot<User, UserId>
     {
         Password = password;
         UpdatedAt = DateTime.UtcNow;
-        AddDomainEvent(new UserPasswordUpdatedDomainEvent(Id));
     }
     public RefreshToken AddRefreshToken()
     {

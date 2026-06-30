@@ -30,9 +30,15 @@ public DbSet<Permission> Permissions { get; set; }
         {
             var handlerType = typeof(IDomainEventHandler<>).MakeGenericType(domainEvent.GetType());
             var handler = serviceProvider.GetService(handlerType);
-            if (handler is not null)
-                await (Task)handlerType.GetMethod("Handle")!.Invoke(handler, [domainEvent])!;
-            
+            if (handler is null)
+            {
+                continue;
+            }
+
+            var handleMethod = handlerType.GetMethod("Handle")
+                ?? throw new MissingMethodException(handlerType.FullName, "Handle");
+
+            await (Task)handleMethod.Invoke(handler, [domainEvent, cancellationToken])!;
         }
 
         var result = await  base.SaveChangesAsync(cancellationToken);

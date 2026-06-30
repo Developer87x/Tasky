@@ -1,91 +1,63 @@
 using Dapper;
 using Npgsql;
+using Tasky.Services.Identities.Application.Dtos;
 
 namespace Tasky.Services.Identities.Application.Queries;
 
 public class UserQueries(string connectionString) : IUserQueries
 {
+    private readonly string _connectionString = connectionString;
 
-    private readonly string _connectionString = string.IsNullOrWhiteSpace(connectionString) ? throw new ArgumentNullException(nameof(connectionString)) : connectionString;
-
-    public async Task<Pagination<UserDto>> GetAllUserAsync(PaginationRequest paginationRequest)
+    public Task<UserDto?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken)
     {
         using var connection = new NpgsqlConnection(_connectionString);
-        connection.Open();
-        var totalCount = connection.ExecuteScalar<int>("SELECT COUNT(*) FROM identities.users");
-        var userDict = new Dictionary<string, UserDto>();
-        var roleDict = new Dictionary<string, RoleDto>(); // key: "email|roleName" to scope roles per user
+        const string sql = @"
+            SELECT u.id , u.username, u.email, u.created_at as createdAt,u.updated_at as updatedAt,is_active as isActive,
+            r.id as roleId, r.role_name AS name,
+            p.id as permissionId , p.permission_name AS name
+            FROM identities.users u
+            LEFT JOIN identities.user_roles ur ON u.id = ur.user_id
+            LEFT JOIN identities.roles r ON ur.role_id = r.id
+            LEFT JOIN identities.role_permissions rp ON r.id = rp.role_id
+            LEFT JOIN identities.permissions p ON rp.permission_id = p.id
+            
+            WHERE u.id = @UserId;
+        ";
 
-        await connection.QueryAsync<UserDto, RoleDto, PermissionDto, UserDto>(
-            @"SELECT usr.email, usr.username AS UserName, usr.is_active AS IsActive,
-                r.role_name AS RoleName,
-                p.permission_name AS PermissionName
-                FROM (SELECT id, email, username,is_active FROM identities.users LIMIT @PageSize OFFSET @Offset) usr
-                JOIN identities.user_roles ur ON ur.user_id = usr.id
-                JOIN identities.roles r ON r.id = ur.role_id
-                LEFT JOIN identities.role_permissions rp ON rp.role_id = r.id
-                LEFT JOIN identities.permissions p ON p.id = rp.permission_id",
+        var userDictionary = new Dictionary<Guid, UserDto>();
+
+        var result = connection.Query<UserDto, RoleDto, PermissionDto, UserDto>(
+            sql,
             (user, role, permission) =>
             {
-                if (!userDict.TryGetValue(user.Email!, out var existingUser))
+                if (!userDictionary.TryGetValue(user.Id, out var userEntry))
                 {
-                    existingUser = user;
-                    existingUser.Roles = [];
-                    userDict[user.Email!] = existingUser;
+                    userEntry = user;
+                    userEntry.Roles = new List<RoleDto>();
+                    userDictionary.Add(userEntry.Id, userEntry);
                 }
-                if (role != null)
+
+                if (role != null && !userEntry.Roles.Any(r => r.RoleId == role.RoleId))
                 {
-                    var roleKey = $"{user.Email}|{role.RoleName}";
-                    if (!roleDict.TryGetValue(roleKey, out var existingRole))
+                    role.Permissions = new List<PermissionDto>();
+                    userEntry.Roles.Add(role);
+                }
+
+                if (permission != null && role != null)
+                {
+                    var roleEntry = userEntry.Roles.First(r => r.RoleId == role.RoleId);
+                    if (!roleEntry.Permissions.Any(p => p.PermissionId == permission.PermissionId))
                     {
-                        existingRole = role;
-                        existingRole.Permissions = [];
-                        roleDict[roleKey] = existingRole;
-                        existingUser.Roles!.Add(existingRole);
+                        roleEntry.Permissions.Add(permission);
                     }
-                    if (permission != null)
-                        existingRole.Permissions!.Add(permission);
                 }
-                return existingUser;
+
+                return userEntry;
             },
-            new { Offset = paginationRequest.Offset, PageSize = paginationRequest.PageSize },
-            splitOn: "RoleName,PermissionName");
+            new { UserId = userId },
+            splitOn: "roleId,permissionId"
+        );
 
-        return new()
-        {
-            Items = [.. userDict.Values],
-            TotalCount = totalCount,
-            Page = paginationRequest.Page,
-            PageSize = paginationRequest.PageSize
-        };
+        return Task.FromResult(userDictionary.Values.FirstOrDefault());
     }
-
-    public async Task<UserDto> GetUserById(Guid id)
-    {
-
-        using var connection = new NpgsqlConnection(_connectionString);
-        connection.Open();
-
-        var command = await connection.QueryAsync<UserDto, RoleDto, PermissionDto, UserDto>(
-            @"SELECT usr.email, usr.username AS UserName,
-                r.role_name AS RoleName,
-                p.permission_name AS PermissionName
-                FROM identities.users usr
-                JOIN identities.user_roles ur ON ur.user_id = usr.id
-                JOIN identities.roles r ON r.id = ur.role_id
-                LEFT JOIN identities.role_permissions rp ON rp.role_id = r.id
-                LEFT JOIN identities.permissions p ON p.id = rp.permission_id
-                WHERE usr.id = @Id",
-            (user, role, permission) =>
-            {
-                user.Roles = role == null ? [] : [role];
-                role?.Permissions = permission == null ? [] : [permission];
-                return user;
-            },
-            new { Id = id },
-            splitOn: "RoleName,PermissionName");
-        return command.FirstOrDefault()!;
-    }
-
-
 }

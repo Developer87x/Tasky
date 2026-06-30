@@ -17,7 +17,6 @@ public class Role :AggregateRoot<Role, RoleId>
     {
         Id = id;
         RoleName = roleName;
-        AddDomainEvent(new RoleCreatedDomainEvent(id));
     }
     public static Role Create(string? roleName) => new(RoleId.NewId(), roleName);
     public void UpdateRoleName(string? roleName) => RoleName = roleName;
