@@ -36,7 +36,7 @@ public class UsersController(ILogger<UsersController> logger, ICommandDispatcher
         else
         {
             _logger.LogError("the process of creating a new user has failed with error: {Error}", result.Error); // Log the error if the user creation process failed
-            return BadRequest(result.Error); // Return the error if failed
+            return BadRequest(result); // Return the error if failed
         }
     }
 
