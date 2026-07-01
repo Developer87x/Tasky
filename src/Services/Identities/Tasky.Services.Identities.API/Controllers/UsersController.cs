@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Tasky.Services.Identities.Application.Commands;
+using Tasky.Services.Identities.Application.Commands.AssignRoleToUserCommands;
 using Tasky.Services.Identities.Application.Commands.CreateUserCommands;
 using Tasky.Services.Identities.Application.Queries;
 using Tasky.Services.Identities.Infrastructure.Configurations.ServicesExtensions;
@@ -59,6 +60,27 @@ public class UsersController(ILogger<UsersController> logger, ICommandDispatcher
         {
             _logger.LogWarning("user with ID {UserId} was not found", userId); // Log a warning if the user was not found
             return NotFound(); // Return a 404 Not Found response if the user was not found
+        }
+    }
+    // POST: api/users/assign-role-to-user
+    [HttpPut("assign-role-to-user")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [AllowAnonymous]
+    public async Task<IActionResult> AssignRoleToUser([FromBody] AssignRoleToUserCommand command, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("the process of assigning role {RoleId} to user {UserId} has started", command.RoleId, command.UserId); // Log the start of the role assignment process
+        var result = await _commandDispatcher.Send(command, cancellationToken); // Send the command to the command dispatcher for processing
+        if (result.IsSuccess) // Check if the result indicates success
+        {
+            _logger.LogInformation("the process of assigning role {RoleId} to user {UserId} has completed successfully", command.RoleId, command.UserId); // Log the successful completion of the role assignment process
+            return Ok(result); // Return the result if successful           
+        }
+        else
+        {
+            _logger.LogError("the process of assigning role {RoleId} to user {UserId} has failed with error: {Error}", command.RoleId, command.UserId, result.Error); // Log the error if the role assignment process failed
+            return BadRequest(result); // Return the error if failed
         }
     }
 

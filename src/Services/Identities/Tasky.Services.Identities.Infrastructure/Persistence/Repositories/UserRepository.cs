@@ -23,6 +23,7 @@ public class UserRepository(IdentityDb db) : IUserRepository
         return await _db.Users.
         Include(s => s.RefreshTokens).
         Include(s => s.Roles).
+        AsSplitQuery().
         FirstOrDefaultAsync(u => u.Id.Equals(userId), cancellationToken);
     }
     public async Task<User?> GetByUserNameAsync(string userName, CancellationToken cancellationToken = default)
@@ -31,6 +32,7 @@ public class UserRepository(IdentityDb db) : IUserRepository
         Include(s => s.RefreshTokens).
         Include(s => s.Roles).
             ThenInclude(r => r.Permissions).
+        AsSplitQuery().
         FirstOrDefaultAsync(u => u.UserName == userName, cancellationToken);
     }
 

@@ -17,9 +17,10 @@ public class RoleRepository(IdentityDb db) : IRoleRepository
         return entry.Entity;
     }
 
-    public Task<Role?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default  )
+    public async Task<Role?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default  )
     {
-        var role = _db.Roles.FirstOrDefaultAsync(r => r.Id.Value == id, cancellationToken);
+        var roleId = RoleId.From(id);
+        var role = await _db.Roles.Where(r => r.Id == roleId).FirstOrDefaultAsync(cancellationToken);
         return role;
     }
 

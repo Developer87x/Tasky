@@ -26,6 +26,7 @@ public static class DatabaseExtension
             {
                 s.MigrationsAssembly("Tasky.Services.Identities.Infrastructure");
                 s.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+                s.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
             });
         });
         return services;
