@@ -1,15 +1,18 @@
 using Dapper;
+using Microsoft.Extensions.Logging;
 using Npgsql;
 using Tasky.Services.Identities.Application.Dtos;
 
 namespace Tasky.Services.Identities.Application.Queries;
 
-public class UserQueries(string connectionString) : IUserQueries
+public class UserQueries(string connectionString, ILogger<UserQueries> logger) : IUserQueries
 {
     private readonly string _connectionString = connectionString;
+    private readonly ILogger<UserQueries> _logger = logger;
 
     public Task<UserDto?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken)
     {
+        
         using var connection = new NpgsqlConnection(_connectionString);
         const string sql = @"
             SELECT u.id , u.username, u.email, u.created_at as createdAt,u.updated_at as updatedAt,is_active as isActive,
@@ -25,7 +28,7 @@ public class UserQueries(string connectionString) : IUserQueries
         ";
 
         var userDictionary = new Dictionary<Guid, UserDto>();
-
+        _logger.LogInformation("Executing SQL query to retrieve user by ID: {UserId}", userId);
         var result = connection.Query<UserDto, RoleDto, PermissionDto, UserDto>(
             sql,
             (user, role, permission) =>

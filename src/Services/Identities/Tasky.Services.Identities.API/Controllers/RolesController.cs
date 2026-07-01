@@ -34,4 +34,36 @@ public class RolesController(ILogger<RolesController> logger, ICommandDispatcher
         _logger.LogWarning("the process of creating a new role has failed"); // Log the failure of the role creation process
         return BadRequest(result);
     }
+    [HttpGet("get-roles")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetRoles([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("the process of retrieving roles has started"); // Log the start of the role retrieval process
+        var result = await _roleQueries.GetRolesAsync(pageNumber, pageSize, cancellationToken);
+        if (result != null)
+        {
+            _logger.LogInformation("the process of retrieving roles has completed successfully"); // Log the successful completion of the role retrieval process
+            return Ok(result);  
+        }
+        _logger.LogWarning("the process of retrieving roles has failed"); // Log the failure of the role retrieval process
+        return BadRequest();    
+    }
+    [HttpGet("{roleId}")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetRoleById([FromRoute] Guid roleId, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("the process of retrieving a role by ID has started"); // Log the start of the role retrieval process
+        var result = await _roleQueries.GetRoleByIdAsync(roleId, cancellationToken);
+        if (result != null)
+        {
+            _logger.LogInformation("the process of retrieving a role by ID has completed successfully"); // Log the successful completion of the role retrieval process
+            return Ok(result);  
+        }
+        _logger.LogWarning("the process of retrieving a role by ID has failed"); // Log the failure of the role retrieval process
+        return NotFound();    
+    }
 } 

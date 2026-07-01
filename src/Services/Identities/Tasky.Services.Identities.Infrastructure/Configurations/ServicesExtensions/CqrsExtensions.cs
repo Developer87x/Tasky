@@ -13,14 +13,14 @@ public static class CqrsExtensions
         services.AddScoped<IRoleQueries>(sp =>
         {
             var config = sp.GetRequiredService<IConfiguration>();
-            return new RoleQueries(config.GetConnectionString("IdentityDbStr")!);
+            return new RoleQueries(config.GetConnectionString("IdentityDbStr")!, sp.GetRequiredService<Microsoft.Extensions.Logging.ILogger<RoleQueries>>());
         });
 
 
         services.AddScoped<IUserQueries>(sp =>
         {
             var config = sp.GetRequiredService<IConfiguration>();
-            return new UserQueries(config.GetConnectionString("IdentityDbStr")!);
+            return new UserQueries(config.GetConnectionString("IdentityDbStr")!, sp.GetRequiredService<Microsoft.Extensions.Logging.ILogger<UserQueries>>());
         });
 
 
