@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Tasky.Services.Identities.Application.Commands;
+using Tasky.Services.Identities.Application.Commands.ActivateUserCommands;
 using Tasky.Services.Identities.Application.Commands.AssignRoleToUserCommands;
 using Tasky.Services.Identities.Application.Commands.CreateUserCommands;
 using Tasky.Services.Identities.Application.Queries;
@@ -21,7 +22,7 @@ public class UsersController(ILogger<UsersController> logger, ICommandDispatcher
 
 
     [HttpPost("create-user")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [AllowAnonymous]
@@ -64,7 +65,7 @@ public class UsersController(ILogger<UsersController> logger, ICommandDispatcher
     }
     // POST: api/users/assign-role-to-user
     [HttpPut("assign-role-to-user")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [AllowAnonymous]
@@ -80,6 +81,26 @@ public class UsersController(ILogger<UsersController> logger, ICommandDispatcher
         else
         {
             _logger.LogError("the process of assigning role {RoleId} to user {UserId} has failed with error: {Error}", command.RoleId, command.UserId, result.Error); // Log the error if the role assignment process failed
+            return BadRequest(result); // Return the error if failed
+        }
+    }
+    [HttpPut("activate-user")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [AllowAnonymous]
+    public async Task<IActionResult> ActivateUser([FromBody] ActivateUserCommand command, CancellationToken cancellationToken)
+    {
+       _logger.LogInformation("the process of activating user {UserId} has started", command.UserId); // Log the start of the user activation process
+        var result = await _commandDispatcher.Send(command, cancellationToken); // Send the command to the command dispatcher for processing
+        if (result.IsSuccess) // Check if the result indicates success
+        {
+            _logger.LogInformation("the process of activating user {UserId} has completed successfully", command.UserId); // Log the successful completion of the user activation process
+            return Ok(result); // Return the result if successful           
+        }
+        else
+        {
+            _logger.LogError("the process of activating user {UserId} has failed with error: {Error}", command.UserId, result.Error); // Log the error if the user activation process failed
             return BadRequest(result); // Return the error if failed
         }
     }
