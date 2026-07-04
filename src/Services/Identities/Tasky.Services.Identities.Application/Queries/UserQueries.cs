@@ -10,7 +10,7 @@ public class UserQueries(string connectionString, ILogger<UserQueries> logger) :
     private readonly string _connectionString = connectionString;
     private readonly ILogger<UserQueries> _logger = logger;
 
-    public Task<UserDto?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken)
+    public async Task<UserDto?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken)
     {
         
         using var connection = new NpgsqlConnection(_connectionString);
@@ -29,20 +29,20 @@ public class UserQueries(string connectionString, ILogger<UserQueries> logger) :
 
         var userDictionary = new Dictionary<Guid, UserDto>();
         _logger.LogInformation("Executing SQL query to retrieve user by ID: {UserId}", userId);
-        var result = connection.Query<UserDto, RoleDto, PermissionDto, UserDto>(
+        var result = await connection.QueryAsync<UserDto, RoleDto, PermissionDto, UserDto>(
             sql,
             (user, role, permission) =>
             {
                 if (!userDictionary.TryGetValue(user.Id, out var userEntry))
                 {
                     userEntry = user;
-                    userEntry.Roles = new List<RoleDto>();
+                    userEntry.Roles = [];
                     userDictionary.Add(userEntry.Id, userEntry);
                 }
 
                 if (role != null && !userEntry.Roles.Any(r => r.RoleId == role.RoleId))
                 {
-                    role.Permissions = new List<PermissionDto>();
+                    role.Permissions = [];
                     userEntry.Roles.Add(role);
                 }
 
@@ -61,6 +61,6 @@ public class UserQueries(string connectionString, ILogger<UserQueries> logger) :
             splitOn: "roleId,permissionId"
         );
 
-        return Task.FromResult(userDictionary.Values.FirstOrDefault());
+        return userDictionary.Values.FirstOrDefault();
     }
 }
