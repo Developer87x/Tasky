@@ -20,4 +20,20 @@ public class PermissionRepository(IdentityDb db) : IPermissionRepository
     {
         return await _db.Permissions.FirstOrDefaultAsync(p => p.PermissionName == permissionName);
     }
+
+    public Task<List<Permission>> GetPermissionsByIdsAsync(List<Guid> permissionIds, CancellationToken cancellationToken = default)
+    {
+        var list = new List<PermissionId>();
+        foreach (var id in permissionIds)
+        {
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentException("Permission ID cannot be empty.", nameof(permissionIds));
+            }
+            var permissionId = PermissionId.From(id);
+            list.Add(permissionId);
+        }
+
+        return _db.Permissions.Where(p => list.Contains(p.Id)).ToListAsync(cancellationToken);
+    }
 }

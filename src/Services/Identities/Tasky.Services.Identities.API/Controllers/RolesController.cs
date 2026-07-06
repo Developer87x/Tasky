@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Tasky.Services.Identities.Application.Commands;
+using Tasky.Services.Identities.Application.Commands.AssignPermissionsToRoleCommand;
 using Tasky.Services.Identities.Application.Commands.CreateRoleCommands;
 using Tasky.Services.Identities.Application.Queries;
 using Tasky.Services.Identities.Infrastructure.Configurations.ServicesExtensions;
@@ -9,8 +10,9 @@ using Tasky.Services.Identities.Infrastructure.Configurations.ServicesExtensions
 namespace Tasky.Services.Identities.API.Controllers;
 
 [ApiController]
-[AllowAnonymous]
 [Route("api/[controller]")]
+[Authorize(Roles="Administrators")]
+[Authorize(Policy = "Permission:Full")]
 [EnableRateLimiting(RateLimitExtension.RATE_LIMIT_POLICY_FOR_AUTHENTICATED_USERS)]
 public class RolesController(ILogger<RolesController> logger, ICommandDispatcher dispatcher, IRoleQueries roleQueries) : ControllerBase
 {
@@ -19,7 +21,6 @@ public class RolesController(ILogger<RolesController> logger, ICommandDispatcher
     private readonly IRoleQueries _roleQueries = roleQueries;
 
     [HttpPost("create-role")]
-    [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateRole([FromBody] CreateRoleCommand command, CancellationToken cancellationToken)
@@ -65,5 +66,21 @@ public class RolesController(ILogger<RolesController> logger, ICommandDispatcher
         }
         _logger.LogWarning("the process of retrieving a role by ID has failed"); // Log the failure of the role retrieval process
         return NotFound();    
+    }
+    [HttpPut("assign-permissions-to-role")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AssignPermissionsToRole([FromBody] AssignPermissionsToRoleCommand command, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("the process of assigning permissions to a role has started"); // Log the start of the permission assignment process
+        var result = await _dispatcher.Send(command, cancellationToken);
+        if (result.IsSuccess)
+        {
+            _logger.LogInformation("the process of assigning permissions to a role has completed successfully"); // Log the successful completion of the permission assignment process
+            return Ok(result);
+        }
+        _logger.LogWarning("the process of assigning permissions to a role has failed"); // Log the failure of the permission assignment process
+        return BadRequest(result);
     }
 } 

@@ -23,10 +23,8 @@ public class Role :AggregateRoot<Role, RoleId>
     public void UpdateRoleName(string? roleName) => RoleName = roleName;
     public void AssignPermissionToRole(Permission permission)
     {
-        if(!_permissions.Contains(permission))
-        {
-            _permissions.Add(permission);
-        }
-        throw new DomainException("Permission already assigned to role.");
+        if (_permissions.Any(p => p.Id == permission.Id))
+            throw new DomainException($"Permission with Id {permission.Id} is already assigned to the role.");
+        _permissions.Add(permission);
     }
 }
