@@ -25,7 +25,6 @@ public class UsersController(ILogger<UsersController> logger, ICommandDispatcher
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [AllowAnonymous]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command, CancellationToken cancellationToken)
     {
         _logger.LogInformation("the process of creating a new user has started"); // Log the start of the user creation process
@@ -47,7 +46,6 @@ public class UsersController(ILogger<UsersController> logger, ICommandDispatcher
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [AllowAnonymous]
     public async Task<IActionResult> GetUserById(Guid userId, CancellationToken cancellationToken)
     {
         _logger.LogInformation("the process of retrieving user with ID {UserId} has started", userId); // Log the start of the user retrieval process
@@ -68,7 +66,6 @@ public class UsersController(ILogger<UsersController> logger, ICommandDispatcher
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [AllowAnonymous]
     public async Task<IActionResult> AssignRoleToUser([FromBody] AssignRoleToUserCommand command, CancellationToken cancellationToken)
     {
         _logger.LogInformation("the process of assigning role {RoleId} to user {UserId} has started", command.RoleId, command.UserId); // Log the start of the role assignment process
@@ -88,7 +85,6 @@ public class UsersController(ILogger<UsersController> logger, ICommandDispatcher
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [AllowAnonymous]
     public async Task<IActionResult> ActivateUser([FromBody] ActivateUserCommand command, CancellationToken cancellationToken)
     {
        _logger.LogInformation("the process of activating user {UserId} has started", command.UserId); // Log the start of the user activation process

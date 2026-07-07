@@ -29,7 +29,7 @@ public class PasswordHasher : IPasswordHasher
         hash.CopyTo(result, SALTSIZE);
         return Convert.ToBase64String(result);
     }
-    public async Task<bool> VerifyPasswordAsync(string hashedPassword, string providedPassword)
+    public async Task<bool> VerifyPasswordAsync(string hashedPassword, string providedPassword, CancellationToken cancellationToken = default)
     {
         var decoded =Convert.FromBase64String(hashedPassword);
         var salt = decoded[..SALTSIZE];

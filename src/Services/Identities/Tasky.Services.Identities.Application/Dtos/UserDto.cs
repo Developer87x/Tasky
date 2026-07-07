@@ -32,3 +32,9 @@ public class PaginatedResult<T>
     public int CurrentPage { get; set; }
     public int TotalPages => (int)Math.Ceiling((double)TotalCount / PageSize);
 }
+
+public class SignInResult
+{
+    public string Token { get; set; } = string.Empty;
+    public string RefreshToken { get; set; } =string.Empty;
+}

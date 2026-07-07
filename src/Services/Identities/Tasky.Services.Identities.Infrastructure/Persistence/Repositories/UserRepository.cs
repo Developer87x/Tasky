@@ -17,6 +17,17 @@ public class UserRepository(IdentityDb db) : IUserRepository
         return entry.Entity;
     }
 
+    public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
+    {
+        var user = await _db.Users.Where(u => u.Email!.Value == email)
+            .Include(s => s.RefreshTokens)
+            .Include(s => s.Roles)
+                .ThenInclude(r => r.Permissions)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(cancellationToken);
+            return user;
+    }
+
     public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var userId = UserId.From(id);

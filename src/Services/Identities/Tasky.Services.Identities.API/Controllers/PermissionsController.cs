@@ -20,7 +20,6 @@ public class PermissionsController(ILogger<PermissionsController> logger, IComma
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [AllowAnonymous]
     public async Task<IActionResult> CreatePermission([FromBody] CreatePermissionCommand command)
     {
         _logger.LogInformation("Received request to create permission with name: {PermissionName}", command.Name);
