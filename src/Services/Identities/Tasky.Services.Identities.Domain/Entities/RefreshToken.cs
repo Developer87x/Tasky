@@ -40,8 +40,5 @@ public class RefreshToken : AggregateRoot<RefreshToken, RefreshTokenId>
     }
 
     public bool IsActive => !IsExpired && !IsRevoked;
-
-    public bool I { get; set; }
-
     public void Revoke() => IsRevoked = true;
 }

@@ -11,8 +11,8 @@ namespace Tasky.Services.Identities.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles="Administrators")]
-[Authorize(Policy = "Permission:Full")]
+[Authorize(Roles="Administrators", Policy ="Full")]
+
 [EnableRateLimiting(RateLimitExtension.RATE_LIMIT_POLICY_FOR_AUTHENTICATED_USERS)]
 public class RolesController(ILogger<RolesController> logger, ICommandDispatcher dispatcher, IRoleQueries roleQueries) : ControllerBase
 {
@@ -36,7 +36,7 @@ public class RolesController(ILogger<RolesController> logger, ICommandDispatcher
         return BadRequest(result);
     }
     [HttpGet("get-roles")]
-    [AllowAnonymous]
+    
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetRoles([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
@@ -52,7 +52,7 @@ public class RolesController(ILogger<RolesController> logger, ICommandDispatcher
         return BadRequest();    
     }
     [HttpGet("{roleId}")]
-    [AllowAnonymous]
+    
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetRoleById([FromRoute] Guid roleId, CancellationToken cancellationToken = default)
