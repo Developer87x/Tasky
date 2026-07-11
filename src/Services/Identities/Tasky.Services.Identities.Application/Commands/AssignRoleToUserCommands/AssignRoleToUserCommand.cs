@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Tasky.Services.Identities.Application.Common;
-using Tasky.Services.Identities.Domain.Repositories;
-
 namespace Tasky.Services.Identities.Application.Commands.AssignRoleToUserCommands;
 
 public class AssignRoleToUserCommand :ICommand<Result>
@@ -15,18 +8,11 @@ public class AssignRoleToUserCommand :ICommand<Result>
 }
 
 
-public class AssignRoleToUserCommandHandler : ICommandHandler<AssignRoleToUserCommand, Result>
+public class AssignRoleToUserCommandHandler(IUserRepository userRepository, IRoleRepository roleRepository, ILogger<AssignRoleToUserCommandHandler> logger) : ICommandHandler<AssignRoleToUserCommand, Result>
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IRoleRepository _roleRepository;
-    private readonly ILogger<AssignRoleToUserCommandHandler> _logger;
-
-    public AssignRoleToUserCommandHandler(IUserRepository userRepository, IRoleRepository roleRepository, ILogger<AssignRoleToUserCommandHandler> logger)
-    {
-        _userRepository = userRepository;
-        _roleRepository = roleRepository;
-        _logger = logger;
-    }
+    private readonly IUserRepository _userRepository = userRepository;
+    private readonly IRoleRepository _roleRepository = roleRepository;
+    private readonly ILogger<AssignRoleToUserCommandHandler> _logger = logger;
 
     public async Task<Result> Handle(AssignRoleToUserCommand command, CancellationToken cancellationToken = default)
     {
