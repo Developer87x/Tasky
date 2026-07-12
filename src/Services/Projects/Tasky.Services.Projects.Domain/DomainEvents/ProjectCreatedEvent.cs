@@ -2,11 +2,11 @@ using Tasky.Services.Projects.Domain.SharedKernel;
 
 namespace Tasky.Services.Projects.Domain.DomainEvents;
 
-public class CategoryCreatedEvent:IDomainEvent
+public class ProjectCreatedEvent:IDomainEvent
 {
     public Guid Id { get; }
 
-    public CategoryCreatedEvent(Guid id)
+    public ProjectCreatedEvent(Guid id)
     {
         Id = id;
     }

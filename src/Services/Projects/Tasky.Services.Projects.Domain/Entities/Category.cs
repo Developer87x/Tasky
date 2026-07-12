@@ -5,6 +5,7 @@ namespace Tasky.Services.Projects.Domain.Entities;
 
 public class Category :AggregateRoot<Category, CategoryId>
 {
+	private readonly List<Project> _projects = [];
     protected Category(CategoryId id) : base(id)
     {
     }
