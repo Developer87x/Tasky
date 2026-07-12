@@ -1,4 +1,6 @@
 using Microsoft.Extensions.Logging;
+using Tasky.Services.Identities.Application.Common;
+using Tasky.Services.Identities.Domain.Repositories;
 namespace Tasky.Services.Identities.Application.Commands.AssignRoleToUserCommands;
 
 public class AssignRoleToUserCommand :ICommand<Result>
