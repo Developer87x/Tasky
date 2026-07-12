@@ -11,7 +11,7 @@ namespace Tasky.Services.Identities.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles="Administrators", Policy ="Full")]
+[Authorize(Roles="Administrators", Policy ="Full-Access")]
 
 [EnableRateLimiting(RateLimitExtension.RATE_LIMIT_POLICY_FOR_AUTHENTICATED_USERS)]
 public class RolesController(ILogger<RolesController> logger, ICommandDispatcher dispatcher, IRoleQueries roleQueries) : ControllerBase

@@ -11,6 +11,7 @@ namespace Tasky.Services.Identities.API.Controllers;
 [Route("api/[controller]")]
 [Produces("application/json")]
 [EnableRateLimiting(RateLimitExtension.RATE_LIMIT_POLICY_FOR_AUTHENTICATED_USERS)]
+[Authorize(Roles = "Administrators")]
 public class PermissionsController(ILogger<PermissionsController> logger, ICommandDispatcher commandDispatcher) : ControllerBase
 {
     private readonly ILogger<PermissionsController> _logger = logger;
