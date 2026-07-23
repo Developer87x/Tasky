@@ -16,9 +16,9 @@ public class Category :AggregateRoot<Category, CategoryId>
 
 	public string? CategoryName { get; private set; } = string.Empty;
    
-	public static Category Create(CategoryId id, string categoryName)
+	public static Category Create(string categoryName)
 	{
-		return new Category(id, categoryName);
+		return new Category(CategoryId.New, categoryName);
 	}
 
 	public void UpdateCategoryName(string categoryName)
