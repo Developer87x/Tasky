@@ -1,3 +1,5 @@
+using Tasky.Services.Projects.Infrastructure.Configurations.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // create service and configuration variables 
@@ -8,7 +10,8 @@ var configurations = builder.Configuration;
 
 
 services.AddControllers();
-
+services.AddProjectDatabase(configurations); // Add database-related services here
+services.AddLogging(); // Add logging-related services here
 
 var app = builder.Build();
 

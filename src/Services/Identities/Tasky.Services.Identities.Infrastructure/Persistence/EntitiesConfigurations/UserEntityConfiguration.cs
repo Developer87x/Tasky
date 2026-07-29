@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Tasky.Services.Identities.Domain.Entities;
 
 namespace Tasky.Services.Identities.Infrastructure.Persistence.EntitiesConfigurations;
 
 public class UserEntityConfiguration : IEntityTypeConfiguration<User>
 {
-    public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<User> builder)
+    public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.HasKey(s => s.Id).HasName("pk_users_id");
         builder.Property(s=>s.Id).HasConversion(

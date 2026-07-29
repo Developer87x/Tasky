@@ -21,6 +21,8 @@ public sealed class Project : AggregateRoot<Project, ProjectId>
     public string? ProjectCode { get; private set; } = string.Empty;
 	public bool IsActive { get; private set; } = true;
 	public string? ProjectManagerId { get; private set; } = string.Empty;
+	public CategoryId? CategoryId { get; private set; }
+	public Category Category { get; private set; }
 
 	public static Project Create(ProjectId id, string projectName,string projectManagerId)
 	{

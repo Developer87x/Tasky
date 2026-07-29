@@ -15,6 +15,7 @@ public class Category :AggregateRoot<Category, CategoryId>
 	}
 
 	public string? CategoryName { get; private set; } = string.Empty;
+	public IReadOnlyCollection<Project> Projects => _projects.AsReadOnly();
    
 	public static Category Create(string categoryName)
 	{
