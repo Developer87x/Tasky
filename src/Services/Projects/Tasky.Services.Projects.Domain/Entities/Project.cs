@@ -1,9 +1,9 @@
+using Tasky.BuildingBlocks.Core.Models;
 using Tasky.Services.Projects.Domain.DomainEvents;
-using Tasky.Services.Projects.Domain.SharedKernel;
 
 namespace Tasky.Services.Projects.Domain.Entities;
 
-public sealed class Project : AggregateRoot<Project, ProjectId>
+public sealed class Project : AggregateRoot<ProjectId>
 {
 	private Project(ProjectId id) : base(id)
 	{
@@ -12,6 +12,7 @@ public sealed class Project : AggregateRoot<Project, ProjectId>
 	public Project(ProjectId id, string projectName,string project) : this(id)
 	{
 		ProjectName = projectName;
+		CreatedAt = DateTime.UtcNow;
 
 		AddDomainEvent(new ProjectCreatedEvent(id.Value));
 	}
@@ -22,7 +23,7 @@ public sealed class Project : AggregateRoot<Project, ProjectId>
 	public bool IsActive { get; private set; } = true;
 	public string? ProjectManagerId { get; private set; } = string.Empty;
 	public CategoryId? CategoryId { get; private set; }
-	public Category Category { get; private set; }
+	public Category? Category { get; private set; }
 
 	public static Project Create(ProjectId id, string projectName,string projectManagerId)
 	{

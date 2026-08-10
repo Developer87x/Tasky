@@ -37,7 +37,7 @@ public class ExceptionHandling(RequestDelegate next, ILogger<ExceptionHandling> 
             _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred.")
         };
 
-        var proplemDetails = new ProblemDetails
+        var problemDetails = new ProblemDetails
         {
             Type = $"https://httpstatuses.com/{statusCode}",
             Title = message,
@@ -50,7 +50,7 @@ public class ExceptionHandling(RequestDelegate next, ILogger<ExceptionHandling> 
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = statusCode;
 
-        var response = JsonSerializer.Serialize(proplemDetails,new JsonSerializerOptions{PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+        var response = JsonSerializer.Serialize(problemDetails,new JsonSerializerOptions{PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
         await context.Response.WriteAsync(response);
     }
 }

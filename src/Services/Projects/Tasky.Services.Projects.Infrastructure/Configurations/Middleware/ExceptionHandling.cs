@@ -1,12 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Tasky.Services.Projects.Domain.Exceptions;
+using Tasky.Services.Projects.Domain.Exceptions;  
 
 namespace Tasky.Services.Projects.Infrastructure.Configurations.Middleware;
 
@@ -20,13 +18,14 @@ public class ExceptionHandling(RequestDelegate next, ILogger<ExceptionHandling> 
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An unhandled exception on {Methods} {Path}: {Message}",
-                context.Request.Method,
-                context.Request.Path,
-                ex.Message);
+            logger.LogError(ex, "ExceptionHandling CAUGHT exception: {Type} - {Message}",
+                ex.GetType().Name, ex.Message);
 
             if (context.Response.HasStarted)
+            {
+                logger.LogError("Response already started, cannot handle exception");
                 throw;
+            }
 
             await HandleExceptionAsync(context, ex);
         }
@@ -38,24 +37,27 @@ public class ExceptionHandling(RequestDelegate next, ILogger<ExceptionHandling> 
         {
             NotFoundException e => (StatusCodes.Status404NotFound, e.Message),
             BadRequestException e => (StatusCodes.Status400BadRequest, e.Message),
-            Domain.Exceptions.UnauthorizedException e => (StatusCodes.Status401Unauthorized, e.Message),
+            UnauthorizedException e => (StatusCodes.Status401Unauthorized, e.Message),
             _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred.")
         };
 
-        var proplemDetails = new ProblemDetails
+        var problemDetails = new ProblemDetails  
         {
             Type = $"https://httpstatuses.com/{statusCode}",
             Title = message,
             Status = statusCode,
-            Detail = statusCode == StatusCodes.Status500InternalServerError ? "An unexpected error occurred. Please try again later." : message,
+            Detail = statusCode == StatusCodes.Status500InternalServerError 
+                ? "An unexpected error occurred. Please try again later." 
+                : message,
             Instance = context.Request.Path
         };
 
-        context.Response.Clear();  // clear any partial response
+        context.Response.Clear();
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = statusCode;
 
-        var response = JsonSerializer.Serialize(proplemDetails, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+        var response = JsonSerializer.Serialize(problemDetails, 
+            new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
         await context.Response.WriteAsync(response);
     }
 }

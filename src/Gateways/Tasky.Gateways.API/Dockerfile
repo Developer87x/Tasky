@@ -9,13 +9,13 @@ WORKDIR /src
 
 COPY "Tasky.slnx" "Tasky.slnx"
 
-
+# copy gateways files
 COPY "Gateways/Tasky.Gateways.API/Tasky.Gateways.API.csproj" "Gateways/Tasky.Gateways.API/Tasky.Gateways.API.csproj"
 
+# copy BuildingBlocks files
+COPY "BuildingBlocks/Tasky.BuildingBlocks/Tasky.BuildingBlocks.csproj" "BuildingBlocks/Tasky.BuildingBlocks/Tasky.BuildingBlocks.csproj"
 
 #copy identites files 
-
-
 COPY "Services/Identities/Tasky.Services.Identities.Domain/Tasky.Services.Identities.Domain.csproj" "Services/Identities/Tasky.Services.Identities.Domain/Tasky.Services.Identities.Domain.csproj"
 COPY "Services/Identities/Tasky.Services.Identities.Application/Tasky.Services.Identities.Application.csproj" "Services/Identities/Tasky.Services.Identities.Application/Tasky.Services.Identities.Application.csproj"
 COPY "Services/Identities/Tasky.Services.Identities.Infrastructure/Tasky.Services.Identities.Infrastructure.csproj" "Services/Identities/Tasky.Services.Identities.Infrastructure/Tasky.Services.Identities.Infrastructure.csproj"

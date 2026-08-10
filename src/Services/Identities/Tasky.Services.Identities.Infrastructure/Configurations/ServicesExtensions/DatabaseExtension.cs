@@ -54,6 +54,8 @@ public static class DatabaseExtension
 
 
             var jwtSettingsSection = configuration.GetSection("JwtSettings");
+            var audiences = jwtSettingsSection.GetSection("Audience").Get<string[]>()
+                ?? throw new InvalidOperationException("JwtSettings:Audience is missing.");
             services.AddAuthentication(auth =>
             {
                 auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -69,7 +71,7 @@ public static class DatabaseExtension
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = jwtSettingsSection["Issuer"],
-                    ValidAudience = jwtSettingsSection["Audience"],
+                    ValidAudiences = audiences,
                     IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtSettingsSection["Secret"]!)),
                     ClockSkew = TimeSpan.Zero
                 };

@@ -1,8 +1,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Tasky.Services.Identities.Application.Commands;
+using Tasky.BuildingBlocks.Core.CRQS;
+using Tasky.BuildingBlocks.Core.Events;
+using Tasky.Services.Identities.Application.Commands.SignInCommands;
 using Tasky.Services.Identities.Application.Queries;
-using Tasky.Services.Identities.Domain.SharedKernel;
 
 namespace Tasky.Services.Identities.Infrastructure.Configurations.ServicesExtensions;
 
@@ -27,9 +28,9 @@ public static class CqrsExtensions
 
 
             services.AddScoped<ICommandDispatcher, CommandDispatcher>();
-            var assembly = typeof(ICommandDispatcher).Assembly;
+            var assembly = typeof(SignInCommandHandler).Assembly;
             var handlerTypes = assembly.GetTypes()
-                .Where(t => !t.IsAbstract && !t.IsInterface)
+                .Where(t => t is { IsAbstract: false, IsInterface: false })
                 .SelectMany(t => t.GetInterfaces()
                     .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICommandHandler<,>))
                     .Select(i => new { Interface = i, Implementation = t }));
@@ -38,7 +39,7 @@ public static class CqrsExtensions
                 services.AddScoped(handler.Interface, handler.Implementation);
 
             var domainHandlerTypes = assembly.GetTypes()
-                .Where(t => !t.IsAbstract && !t.IsInterface)
+                .Where(t => t is { IsAbstract: false, IsInterface: false })
                 .SelectMany(t => t.GetInterfaces()
                     .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IDomainEventHandler<>))
                     .Select(i => new { Interface = i, Implementation = t }));

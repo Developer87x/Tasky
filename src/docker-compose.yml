@@ -22,13 +22,13 @@ services :
       - "5100:80"
     depends_on:
       - identities
+      - projects 
 
   identities:
     container_name: tasky-identities-service
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80
-      - JwtSettings__Secret=yBG5WrUlLIrYVT/WqbHRGsup5m+taMg8T7IEZyOupQto=
       - PORT=80
     build:
       context: .

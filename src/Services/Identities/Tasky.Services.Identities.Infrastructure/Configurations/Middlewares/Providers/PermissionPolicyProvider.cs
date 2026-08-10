@@ -10,7 +10,7 @@ namespace Tasky.Services.Identities.Infrastructure.Configurations.Middlewares.Pr
         {
             var policy = await base.GetPolicyAsync(policyName);
             if (policy is not null)
-            return policy;
+                return policy;
 
             return new AuthorizationPolicyBuilder()
             .AddRequirements(new PermissionRequirement(policyName)).Build();

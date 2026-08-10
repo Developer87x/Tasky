@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Tasky.BuildingBlocks.Core.EfCore;
 using Tasky.Services.Identities.Domain.Entities;
 using Tasky.Services.Identities.Domain.Repositories;
 
@@ -9,7 +10,8 @@ public class RoleRepository(IdentityDb db) : IRoleRepository
 
     private readonly IdentityDb _db = db;
 
-    public IUnitOfWork UnitOfWork => _db; 
+
+    IUnitOfWork IRepository<Role>.UnitOfWork => _db;
 
     public async Task<Role> AddAsync(Role role, CancellationToken cancellationToken = default)
     {
@@ -25,6 +27,11 @@ public class RoleRepository(IdentityDb db) : IRoleRepository
             .Where(r => r.Id == roleId)
             .FirstOrDefaultAsync(cancellationToken);
         return role;
+    }
+
+    Task<Role> IRepository<Role>.UpdateAsync(Role entity, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
     }
 
     public async Task<Role?> GetByNameAsync(string name, CancellationToken cancellationToken = default)

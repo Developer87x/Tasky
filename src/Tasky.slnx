@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/BuildingBlocks/">
+    <Project Path="BuildingBlocks/Tasky.BuildingBlocks/Tasky.BuildingBlocks.csproj" />
+  </Folder>
   <Folder Name="/Gateways/">
     <Project Path="Gateways/Tasky.Gateways.API/Tasky.Gateways.API.csproj" />
   </Folder>

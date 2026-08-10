@@ -1,11 +1,10 @@
+using Tasky.BuildingBlocks.Core.Models;
 using Tasky.Services.Identities.Domain.DomainEvents;
 using Tasky.Services.Identities.Domain.Exceptions;
-using Tasky.Services.Identities.Domain.SharedKernel;
 using Tasky.Services.Identities.Domain.ValueObjects;
-
 namespace Tasky.Services.Identities.Domain.Entities;
 
-public class User : AggregateRoot<User, UserId>
+public class User : AggregateRoot<UserId>
 {
 
     private readonly List<Role> _roles = [];
@@ -15,70 +14,71 @@ public class User : AggregateRoot<User, UserId>
     public string? UserName { get; private set; }
     public Password? Password { get; private set; }
     public bool IsActive { get; private set; }
-    public DateTime CreatedAt { get; private set; }
-    public DateTime? UpdatedAt { get; private set; }
     public IReadOnlyCollection<Role> Roles => _roles.AsReadOnly();
     public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens.AsReadOnly();
     private User() :base(UserId.NewId()) { }
-    private User(UserId id, Email? email, string? userName, Password? password, DateTime createdAt, DateTime? updatedAt) : this()
+
+    public User(UserId id, string userName, Email email, Password password,DateTime? lastModified = null,string? lastModifiedBy =null) : base(id)
     {
-        Id = id;
-        Email = email;
+        
         UserName = userName;
+        Email = email;
         Password = password;
-        IsActive = false;
-        CreatedAt = createdAt;
-        UpdatedAt = updatedAt;
-        AddDomainEvent(new UserCreatedEvent(id, userName, email));
+        LastModified = lastModified;
+        CreatedAt = DateTime.UtcNow;
+        CreatedBy= "system";
+        IsActive= false;
+        LastModifiedBy = lastModifiedBy;
+        AddDomainEvent(new UserCreatedEvent(id,email));
     }
-
-    public static User Create(Email email, string? userName, Password password) => new(UserId.NewId(), email, userName, password, DateTime.UtcNow, null);
-
+    
     public void Activate()
     {
         IsActive = true;
-        UpdatedAt = DateTime.UtcNow;
+        LastModified = DateTime.UtcNow;
     }
     public void Deactivate()
     {
         IsActive = false;
-        UpdatedAt = DateTime.UtcNow;
-    }
-
+        LastModified = DateTime.UtcNow;
+    }   
     public void UpdateEmail(Email? email)
     {
         Email= email;
-        UpdatedAt = DateTime.UtcNow;
+        LastModified = DateTime.UtcNow;
     }
-
     public void AddRole(Role role)
     {
-        if (!_roles.Contains(role))
+        switch (_roles.Contains(role))
         {
-            _roles.Add(role);
-            UpdatedAt = DateTime.UtcNow;
-            return;
+            case false:
+                _roles.Add(role);
+                LastModified = DateTime.UtcNow;
+                return;
+            default:
+                throw new DomainException("Role already assigned to user.");
         }
-        throw new DomainException("Role already assigned to user.");
     }
-
-
     public void UpdatePassword(Password password)
     {
         Password = password;
-        UpdatedAt = DateTime.UtcNow;
+        LastModified = DateTime.UtcNow;
     }
     public RefreshToken AddRefreshToken()
     {
-        foreach (var token in _refreshTokens)
+        foreach (var token in _refreshTokens.Where(token => token.IsActive))
         {
-            if (token.IsActive)
-            {
-                token.Revoke();
-            }
+            token.Revoke();
         }
         var newToken = RefreshToken.Create(Id);
         _refreshTokens.Add(newToken);
         return newToken;
     }
+    public static User Create(Email email,string userName, Password password,DateTime? lastModified = null,string? lastModifiedBy =null)=> new (UserId.NewId(),userName,email,password,lastModified,lastModifiedBy)
+    {
+        CreatedAt = DateTime.UtcNow,
+        CreatedBy = null,
+        IsDeleted = false,
+        IsActive = true
+    };
 }

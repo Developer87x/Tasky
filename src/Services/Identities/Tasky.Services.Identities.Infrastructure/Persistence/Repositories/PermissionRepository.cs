@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Tasky.BuildingBlocks.Core.EfCore;
 using Tasky.Services.Identities.Domain.Entities;
 using Tasky.Services.Identities.Domain.Repositories;
 
@@ -9,6 +10,20 @@ public class PermissionRepository(IdentityDb db) : IPermissionRepository
     private readonly IdentityDb _db = db;
 
     public IUnitOfWork UnitOfWork => _db;
+    public Task<Permission> AddAsync(Permission entity, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Permission?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Permission> UpdateAsync(Permission entity, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
 
     public async Task<Permission> AddAsync(Permission permission)
     {

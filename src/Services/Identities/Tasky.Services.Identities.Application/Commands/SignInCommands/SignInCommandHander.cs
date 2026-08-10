@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Tasky.BuildingBlocks.Core.CRQS;
 using Tasky.Services.Identities.Application.Common;
 using Tasky.Services.Identities.Application.Dtos;
 using Tasky.Services.Identities.Application.Services;
@@ -6,25 +7,24 @@ using Tasky.Services.Identities.Domain.Repositories;
 
 namespace Tasky.Services.Identities.Application.Commands.SignInCommands;
 
-public class SignInCommandHander : ICommandHandler<SignInCommand, Result<SignInResult>>
+public class SignInCommandHandler : ICommandHandler<SignInCommand, Result<SignInResult>>
 {
 
     private readonly IUserRepository _userRepository;
     private readonly ITokenService _tokenService;
     private readonly IPasswordHasher _passwordHasher;
-    private readonly ILogger<SignInCommandHander> _logger;
-    
+    private readonly ILogger<SignInCommandHandler> _logger;
 
-    public SignInCommandHander(IUserRepository userRepository, ITokenService tokenService, IPasswordHasher passwordHasher, ILogger<SignInCommandHander> logger)
+
+    public SignInCommandHandler(IUserRepository userRepository, ITokenService tokenService, IPasswordHasher passwordHasher, ILogger<SignInCommandHandler> logger)
     {
         _userRepository = userRepository;
         _tokenService = tokenService;
         _passwordHasher = passwordHasher;
         _logger = logger;
     }
-
-
-    public async Task<Result<SignInResult>> Handle(SignInCommand command, CancellationToken cancellationToken)
+    
+    public async Task<Result<SignInResult>> HandleAsync(SignInCommand command, CancellationToken cancellationToken = default)
     {
         var user = await _userRepository.GetByEmailAsync(command.Email!, cancellationToken);
         if (user == null)
@@ -48,11 +48,7 @@ public class SignInCommandHander : ICommandHandler<SignInCommand, Result<SignInR
         await _userRepository.UpdateAsync(user, cancellationToken);
         await _userRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
         _logger.LogInformation("User with email {Email} signed in successfully.", command.Email);
-        return Result<SignInResult>.Success(new SignInResult
-        {
-            Token = token,
-            RefreshToken = refreshToken.RawToken!
-        });
+        return Result<SignInResult>.Success(new SignInResult(token: token, refreshToken: refreshToken.RawToken!));
     }
 }
 

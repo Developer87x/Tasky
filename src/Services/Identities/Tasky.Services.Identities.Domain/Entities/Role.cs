@@ -1,10 +1,10 @@
+using Tasky.BuildingBlocks.Core.Models;
 using Tasky.Services.Identities.Domain.DomainEvents;
 using Tasky.Services.Identities.Domain.Exceptions;
-using Tasky.Services.Identities.Domain.SharedKernel;
 
 namespace Tasky.Services.Identities.Domain.Entities;
 
-public class Role :AggregateRoot<Role, RoleId>
+public class Role :AggregateRoot<RoleId>
 {
     private readonly List<Permission> _permissions = [];
     private readonly List<User> _users = [];
@@ -17,7 +17,6 @@ public class Role :AggregateRoot<Role, RoleId>
     {
         Id = id;
         RoleName = roleName;
-        AddDomainEvent(new RoleCreatedDomainEvent(Id, roleName));
     }
     public static Role Create(string? roleName) => new(RoleId.NewId(), roleName);
     public void UpdateRoleName(string? roleName) => RoleName = roleName;

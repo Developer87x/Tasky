@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Tasky.BuildingBlocks.Core.EfCore;
 using Tasky.Services.Identities.Domain.Entities;
 using Tasky.Services.Identities.Domain.Repositories;
 

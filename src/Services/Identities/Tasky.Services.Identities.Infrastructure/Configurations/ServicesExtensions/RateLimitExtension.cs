@@ -8,14 +8,14 @@ namespace Tasky.Services.Identities.Infrastructure.Configurations.ServicesExtens
 
 public static class RateLimitExtension
 {
-    public const string RATE_LIMIT_POLICY_FOR_AUTHENTICATED_USERS = "AuthenticatedUsersPolicy";
+    public const string RateLimitPolicyForAuthenticatedUsers = "AuthenticatedUsersPolicy";
     extension(IServiceCollection services)
     {
         public IServiceCollection AddRateLimiting()
         {
             services.AddRateLimiter(rateLimit =>
             {
-                rateLimit.AddFixedWindowLimiter(RATE_LIMIT_POLICY_FOR_AUTHENTICATED_USERS, opt =>
+                rateLimit.AddFixedWindowLimiter(RateLimitPolicyForAuthenticatedUsers, opt =>
                 {
                     opt.PermitLimit = 5;
                     opt.Window = TimeSpan.FromMinutes(1);

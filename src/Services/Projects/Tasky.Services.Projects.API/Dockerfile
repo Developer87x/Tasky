@@ -14,6 +14,9 @@ COPY "Tasky.slnx" "Tasky.slnx"
 # copy gatways files
 COPY "Gateways/Tasky.Gateways.API/Tasky.Gateways.API.csproj" "Gateways/Tasky.Gateways.API/Tasky.Gateways.API.csproj"
 
+# copy BuildingBlocks
+COPY "BuildingBlocks/Tasky.BuildingBlocks/Tasky.BuildingBlocks.csproj" "BuildingBlocks/Tasky.BuildingBlocks/Tasky.BuildingBlocks.csproj"
+
 # copy Identities files
 COPY "Services/Identities/Tasky.Services.Identities.API/Tasky.Services.Identities.API.csproj" "Services/Identities/Tasky.Services.Identities.API/Tasky.Services.Identities.API.csproj"
 COPY "Services/Identities/Tasky.Services.Identities.Infrastructure/Tasky.Services.Identities.Infrastructure.csproj" "Services/Identities/Tasky.Services.Identities.Infrastructure/Tasky.Services.Identities.Infrastructure.csproj"

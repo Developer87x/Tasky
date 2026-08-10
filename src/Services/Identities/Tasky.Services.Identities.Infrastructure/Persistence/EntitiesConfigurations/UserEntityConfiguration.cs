@@ -16,7 +16,7 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
         builder.Property(s => s.UserName).IsRequired().HasMaxLength(100).HasColumnName("username");
         builder.Property(s => s.IsActive).HasColumnName("is_active");
         builder.Property(s => s.CreatedAt).IsRequired().HasColumnName("created_at");
-        builder.Property(s => s.UpdatedAt).HasColumnName("updated_at");
+        builder.Property(s => s.LastModified).HasColumnName("updated_at");
         builder.ToTable("users", IdentityDb.DEFAULT_SCHEMA);
 
         // configure the relationship between User and Role

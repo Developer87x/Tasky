@@ -1,8 +1,9 @@
-using Tasky.Services.Identities.Domain.SharedKernel;
+
+using Tasky.BuildingBlocks.Core.Models;
 
 namespace Tasky.Services.Identities.Domain.Entities;
 
-public class Permission :AggregateRoot<Permission, PermissionId>
+public class Permission :AggregateRoot<PermissionId>
 {
     private readonly List<Role> _roles = [];
     public string? PermissionName { get; private set; }

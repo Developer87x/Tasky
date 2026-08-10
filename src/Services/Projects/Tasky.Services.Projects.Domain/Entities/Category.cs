@@ -1,8 +1,8 @@
-using Tasky.Services.Projects.Domain.SharedKernel;
+using Tasky.BuildingBlocks.Core.Models;
 
 namespace Tasky.Services.Projects.Domain.Entities;
 
-public class Category :AggregateRoot<Category, CategoryId>
+public class Category :AggregateRoot<CategoryId>
 {
 	private readonly List<Project> _projects = [];
     protected Category(CategoryId id) : base(id)
@@ -25,7 +25,7 @@ public class Category :AggregateRoot<Category, CategoryId>
 	public void UpdateCategoryName(string categoryName)
 	{
 		CategoryName = categoryName;
-		UpdatedAt = DateTime.UtcNow;
+		LastModified = DateTime.UtcNow;
 	}
 
 }

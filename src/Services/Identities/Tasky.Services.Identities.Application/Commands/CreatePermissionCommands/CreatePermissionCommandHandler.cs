@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Tasky.BuildingBlocks.Core.CRQS;
 using Tasky.Services.Identities.Application.Common;
 using Tasky.Services.Identities.Domain.Entities;
 using Tasky.Services.Identities.Domain.Repositories;
@@ -16,7 +17,9 @@ public class CreatePermissionCommandHandler : ICommandHandler<CreatePermissionCo
         _logger =logger;
     }
 
-    public async Task<Result> Handle(CreatePermissionCommand command, CancellationToken cancellationToken = default)
+    
+
+    public async Task<Result> HandleAsync(CreatePermissionCommand command, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("");
         var isExistingPermission = await _permissionRepository.GetByNameAsync(command.Name!);
@@ -35,6 +38,5 @@ public class CreatePermissionCommandHandler : ICommandHandler<CreatePermissionCo
         }
         _logger.LogInformation("Permission with name: {PermissionName} created successfully.", command.Name);
         return Result.Success();
-
     }
 }

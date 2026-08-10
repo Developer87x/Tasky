@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Tasky.BuildingBlocks.Core.CRQS;
 using Tasky.Services.Identities.Application.Common;
 using Tasky.Services.Identities.Domain.Repositories;
 
@@ -14,7 +15,9 @@ public class ActivateUserCommandHandler : ICommandHandler<ActivateUserCommand, R
         _logger= logger;
         _userRepository =userRepository;
     }
-    public async Task<Result> Handle(ActivateUserCommand command, CancellationToken cancellationToken = default)
+  
+
+    public async Task<Result> HandleAsync(ActivateUserCommand command, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("activating user {UserId}",command.UserId);
         var user = await _userRepository.GetByIdAsync(command.UserId,cancellationToken);

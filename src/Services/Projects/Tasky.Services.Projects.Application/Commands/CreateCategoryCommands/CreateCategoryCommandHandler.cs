@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Tasky.BuildingBlocks.Core.CRQS;
 using Tasky.Services.Projects.Application.Common;
 using Tasky.Services.Projects.Domain.Entities;
 using Tasky.Services.Projects.Domain.Repositories;

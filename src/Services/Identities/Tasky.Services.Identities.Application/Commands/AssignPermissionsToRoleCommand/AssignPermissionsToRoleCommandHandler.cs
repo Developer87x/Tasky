@@ -1,10 +1,11 @@
 using Microsoft.Extensions.Logging;
+using Tasky.BuildingBlocks.Core.CRQS;
 using Tasky.Services.Identities.Application.Common;
 using Tasky.Services.Identities.Domain.Repositories;
 
 namespace Tasky.Services.Identities.Application.Commands.AssignPermissionsToRoleCommand;
 
-public class AssignPermissionsToRoleCommandHandler : ICommandHandler<AssignPermissionsToRoleCommand, Result>
+public sealed class AssignPermissionsToRoleCommandHandler : ICommandHandler<AssignPermissionsToRoleCommand, Result>
 {
     private readonly ILogger<AssignPermissionsToRoleCommandHandler> _logger;
     private readonly IRoleRepository _roleRepository;
@@ -16,7 +17,8 @@ public class AssignPermissionsToRoleCommandHandler : ICommandHandler<AssignPermi
         _permissionRepository = permissionRepository;
         _logger = logger;
     }
-    public async Task<Result> Handle(AssignPermissionsToRoleCommand command, CancellationToken cancellationToken = default)
+
+    public async Task<Result> HandleAsync(AssignPermissionsToRoleCommand command, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Assigning permissions to role with Id {RoleId}", command.RoleId);
         if (command.PermissionIds is null || command.PermissionIds.Count == 0)

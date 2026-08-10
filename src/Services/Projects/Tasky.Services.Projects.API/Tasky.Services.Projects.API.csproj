@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Tasky.BuildingBlocks\Tasky.BuildingBlocks.csproj" />
     <ProjectReference Include="..\Tasky.Services.Projects.Infrastructure\Tasky.Services.Projects.Infrastructure.csproj" />
     <ProjectReference Include="..\Tasky.Services.Projects.Application\Tasky.Services.Projects.Application.csproj" />
   </ItemGroup>
@@ -10,6 +11,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.10" />
+  <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.22.0" />
+  <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
   </ItemGroup>
 
   <PropertyGroup>

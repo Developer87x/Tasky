@@ -1,12 +1,13 @@
 using Microsoft.EntityFrameworkCore;
+using Tasky.BuildingBlocks.Core.Events;
+using Tasky.BuildingBlocks.Core.Models;
 using Tasky.Services.Identities.Domain.Entities;
 using Tasky.Services.Identities.Domain.Repositories;
-using Tasky.Services.Identities.Domain.SharedKernel;
 using Tasky.Services.Identities.Infrastructure.Persistence.EntitiesConfigurations;
 
 namespace Tasky.Services.Identities.Infrastructure.Persistence;
 
-public class IdentityDb(DbContextOptions<IdentityDb> options,IServiceProvider serviceProvider) : DbContext(options), IUnitOfWork
+public class IdentityDb(DbContextOptions<IdentityDb> options,IServiceProvider serviceProvider) : DbContext(options), IIdentityDbContext
 {
 public const string DEFAULT_SCHEMA = "identities";
 public DbSet<User> Users { get; set; }
@@ -35,7 +36,7 @@ public DbSet<Permission> Permissions { get; set; }
                 continue;
             }
 
-            var handleMethod = handlerType.GetMethod("Handle")
+            var handleMethod = handlerType.GetMethod("HandleAsync")
                 ?? throw new MissingMethodException(handlerType.FullName, "Handle");
 
             await (Task)handleMethod.Invoke(handler, [domainEvent, cancellationToken])!;
@@ -45,7 +46,7 @@ public DbSet<Permission> Permissions { get; set; }
         return result > 0;
     }
 
-    override protected void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 
         modelBuilder.ApplyConfiguration(new UserEntityConfiguration());
@@ -53,5 +54,20 @@ public DbSet<Permission> Permissions { get; set; }
         modelBuilder.ApplyConfiguration(new RefreshTokenEntityConfiguration());
         modelBuilder.ApplyConfiguration(new PermissionEntityConfiguration());
         
+    }
+
+    public Task BeginTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task CommitTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
     }
 }

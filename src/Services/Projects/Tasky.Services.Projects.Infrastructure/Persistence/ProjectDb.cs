@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using Tasky.BuildingBlocks.Core.EfCore;
+using Tasky.BuildingBlocks.Core.Events;
+using Tasky.BuildingBlocks.Core.Models;
 using Tasky.Services.Projects.Domain.Entities;
-using Tasky.Services.Projects.Domain.Repositories;
-using Tasky.Services.Projects.Domain.SharedKernel;
 using Tasky.Services.Projects.Infrastructure.Persistence.EntityConfiigurations;
 
 namespace Tasky.Services.Projects.Infrastructure.Persistence;

@@ -1,14 +1,12 @@
 using System.Security.Cryptography;
-using Tasky.Services.Identities.Domain.SharedKernel;
-
+using Tasky.BuildingBlocks.Core.Models;
 namespace Tasky.Services.Identities.Domain.Entities;
 
-public class RefreshToken : AggregateRoot<RefreshToken, RefreshTokenId>
+public class RefreshToken : AggregateRoot<RefreshTokenId>
 {
     public string? Token { get; private set; }
     public DateTime Expires { get; private set; }
     public bool IsExpired => DateTime.UtcNow >= Expires;
-    public DateTime CreatedAt { get; private set; }
     public UserId UserId { get; private set; }
     public User? User { get; private set; }
     public bool IsRevoked { get; private set; }

@@ -9,6 +9,8 @@ COPY "Tasky.slnx" "Tasky.slnx"
 
 COPY "Gateways/Tasky.Gateways.API/Tasky.Gateways.API.csproj" "Gateways/Tasky.Gateways.API/Tasky.Gateways.API.csproj"
 
+# copy BuildingBlocks
+COPY "BuildingBlocks/Tasky.BuildingBlocks/Tasky.BuildingBlocks.csproj" "BuildingBlocks/Tasky.BuildingBlocks/Tasky.BuildingBlocks.csproj"
 
 COPY "Services/Identities/Tasky.Services.Identities.Domain/Tasky.Services.Identities.Domain.csproj" "Services/Identities/Tasky.Services.Identities.Domain/Tasky.Services.Identities.Domain.csproj"
 COPY "Services/Identities/Tasky.Services.Identities.Application/Tasky.Services.Identities.Application.csproj" "Services/Identities/Tasky.Services.Identities.Application/Tasky.Services.Identities.Application.csproj"

@@ -1,3 +1,4 @@
+using Tasky.BuildingBlocks.Core.EfCore;
 using Tasky.Services.Projects.Domain.Entities;
 
 namespace Tasky.Services.Projects.Domain.Repositories;

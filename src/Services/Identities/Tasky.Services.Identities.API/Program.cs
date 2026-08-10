@@ -1,12 +1,14 @@
 using Serilog;
+using Tasky.Services.Identities.Application.Services;
 using Tasky.Services.Identities.Infrastructure.Configurations.Middlewares;
 using Tasky.Services.Identities.Infrastructure.Configurations.ServicesExtensions;
-
+using Tasky.Services.Identities.Infrastructure.Services;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Verbose()
     .WriteTo.Console()
     .CreateBootstrapLogger();
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddLogging();
@@ -14,26 +16,31 @@ builder.AddLogging();
 var configuration = builder.Configuration;
 var services = builder.Services;
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+// Add services to the container
 services.AddControllers();
-services.AddIdentityDatabase(configuration);             //Registers the database context and related services
-services.AddCqrs();                                      //Registes CQRS services
-services.AddRepositories();                              //Registers repositories
-services.AddJwt(configuration);                          //Registers JWT authentication services    
-services.AddRateLimiting();                              //Registers rate limiting services
-services.AddAuthorizationBuilder()                       //Registers authorization services and policies
-        .SetFallbackPolicy(new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder()
-        .RequireAuthenticatedUser()
-        .Build());
-        
+services.AddIdentityDatabase(configuration);              // Database and repositories
+services.AddCqrs();                                       // CQRS pipeline
+services.AddRepositories();                               // Repository implementations
+services.AddJwtAuthentication(configuration);             // JWT authentication with pluggable signing
+
+// Register improved token generation service
+services.AddScoped<ITokenService, TokenGenerationService>();
+
+// Centralized authorization policy configuration
+// All policies defined in one place for consistency and audit
+services.AddApplicationAuthorization();
+
+services.AddRateLimiting();                               // Rate limiting to prevent abuse
 
 var app = builder.Build();
 
-app.UseMiddleware<ExceptionHandling>();     //Enables custom exception handling middleware
-app.UseLogging();                           //Enables request logging middleware
-app.UseRateLimiting();                      //Enables rate limiting middleware
-app.UseAuthentication();                    //Enables authentication middleware
-app.UseAuthorization();
-app.MapControllers();
+// === MIDDLEWARE PIPELINE: Defense-in-depth approach ===
+// Order matters: exceptions → logging → rate limiting → authentication → authorization → routing → business logic
+app.UseMiddleware<ExceptionHandling>();                 // Catch all exceptions
+app.UseLogging();                                        // Request logging for audit
+app.UseRateLimiting();                                   // Rate limiting enforcement
+app.UseRouting();                                        // Route matching
+app.UseAuthentication();                                 // JWT validation and ClaimsPrincipal extraction
+app.UseAuthorization();                                  // Policy-based authorization
+app.MapControllers();                                    // Controller routing
 app.Run();
