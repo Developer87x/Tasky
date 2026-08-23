@@ -2,9 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Tasky.BuildingBlocks.Core.CRQS;
-using Tasky.Services.Identities.Application.Commands;
 using Tasky.Services.Identities.Application.Commands.CreatePermissionCommands;
-using Tasky.Services.Identities.Application.Security;
 using Tasky.Services.Identities.Infrastructure.Configurations.ServicesExtensions;
 
 namespace Tasky.Services.Identities.API.Controllers;
@@ -25,15 +23,8 @@ public class PermissionsController(ILogger<PermissionsController> logger, IComma
     private readonly ILogger<PermissionsController> _logger = logger;
     private readonly ICommandDispatcher _commandDispatcher = commandDispatcher;
 
-    /// <summary>
-    /// Create a new permission (admin-only operation).
-    /// Requires: PermissionManagement.Create permission
-    /// 
-    /// SECURITY: Creating new permissions is a critical privilege.
-    /// Only users with explicit PermissionManagement.Create permission can perform this action.
-    /// </summary>
+
     [HttpPost("create-permission")]
-    [Authorize(Policy = Permissions.PermissionManagement.Create)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]

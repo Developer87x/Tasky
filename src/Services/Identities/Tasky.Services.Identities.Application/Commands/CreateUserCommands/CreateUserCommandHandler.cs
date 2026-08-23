@@ -28,8 +28,8 @@ public class CreateUserCommandHandler(ILogger<CreateUserCommandHandler> logger, 
             return Result<UserDto>.Failure("User with the same UserName already exists.");
         }
         var password = await _hasher.HashPasswordAsync(command.Password!);
-        var newUser = User.Create(Email.Create(command.Email!), command.UserName, new Password(password)) ?? throw new DomainException("User creation failed due to invalid data.");
-        var userRole = await _roleRepository.GetByNameAsync("Users");
+        var newUser = User.Create(Email.Create(command.Email!), command.UserName!, new Password(password)) ?? throw new DomainException("User creation failed due to invalid data.");
+        var userRole = await _roleRepository.GetByNameAsync("Users", cancellationToken);
         if(userRole == null)
         {
             _logger.LogError("Default role 'Users' not found.");

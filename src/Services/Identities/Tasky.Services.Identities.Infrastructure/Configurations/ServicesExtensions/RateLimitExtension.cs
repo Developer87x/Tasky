@@ -26,10 +26,14 @@ public static class RateLimitExtension
                 rateLimit.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
                     RateLimitPartition.GetFixedWindowLimiter(
                         partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
-                        factory: _ => new FixedWindowRateLimiterOptions
+                        factory: _ =>
                         {
-                            PermitLimit = 100,
-                            Window = TimeSpan.FromMinutes(1)
+                            var options = new FixedWindowRateLimiterOptions
+                            {
+                                PermitLimit = 25,
+                                Window = TimeSpan.FromMinutes(1)
+                            };
+                            return options;
                         }));
             });
             return services;

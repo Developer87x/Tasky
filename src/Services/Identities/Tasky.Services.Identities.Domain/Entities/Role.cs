@@ -17,6 +17,8 @@ public class Role :AggregateRoot<RoleId>
     {
         Id = id;
         RoleName = roleName;
+        CreatedAt = DateTime.UtcNow;
+        CreatedBy = "system";
     }
     public static Role Create(string? roleName) => new(RoleId.NewId(), roleName);
     public void UpdateRoleName(string? roleName) => RoleName = roleName;

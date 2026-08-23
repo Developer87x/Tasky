@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Tasky.BuildingBlocks.Constants;
 using Tasky.BuildingBlocks.Core.CRQS;
 using Tasky.Services.Identities.Application.Commands.ActivateUserCommands;
 using Tasky.Services.Identities.Application.Commands.AssignRoleToUserCommands;
 using Tasky.Services.Identities.Application.Commands.CreateUserCommands;
 using Tasky.Services.Identities.Application.Queries;
-using Tasky.Services.Identities.Application.Security;
 using Tasky.Services.Identities.Infrastructure.Configurations.ServicesExtensions;
 
 namespace Tasky.Services.Identities.API.Controllers;
@@ -52,12 +52,8 @@ public class UsersController(ILogger<UsersController> logger, ICommandDispatcher
         return BadRequest(result);
     }
 
-    /// <summary>
-    /// Get a user by ID.
-    /// Requires: Users.Read permission
-    /// </summary>
     [HttpGet("{userId}")]
-    [Authorize(Policy = Permissions.Users.Read)]
+    [Authorize(Roles = Permissions.Roles.Users)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -90,7 +86,6 @@ public class UsersController(ILogger<UsersController> logger, ICommandDispatcher
     /// This is NOT implicit from administrative role.
     /// </summary>
     [HttpPut("assign-role-to-user")]
-    [Authorize(Policy = Permissions.Users.AssignRole)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -122,16 +117,7 @@ public class UsersController(ILogger<UsersController> logger, ICommandDispatcher
             result.Error);
         return BadRequest(result);
     }
-
-    /// <summary>
-    /// Activate a user account.
-    /// Requires: Users.Activate permission
-    /// 
-    /// SECURITY: User activation is a privileged operation.
-    /// Should typically be performed by administrators only.
-    /// </summary>
     [HttpPut("activate-user")]
-    [Authorize(Policy = Permissions.Users.Activate)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]

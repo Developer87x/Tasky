@@ -43,17 +43,7 @@ public class AuthenticateController(ILogger<AuthenticateController> logger, ICom
             result.Error);
         return BadRequest(result);
     }
-
-    /// <summary>
-    /// Refresh an expir JWT token using a refresh token.
-    /// Requires: Valid JWT token (authenticated user)
-    /// 
-    /// SECURITY:
-    /// - Only authenticated users can refresh their tokens
-    /// - Validates refresh token hasn't expired
-    /// - Issues new access token with same claims
-    /// - Optionally rotates refresh token for additional security
-    /// </summary>
+    
     [HttpPost("refresh-token")]
     [Authorize]  // Require valid JWT token for refresh (implicit authentication)
     [ProducesResponseType(StatusCodes.Status200OK)]
