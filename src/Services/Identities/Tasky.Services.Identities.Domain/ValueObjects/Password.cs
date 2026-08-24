@@ -1,13 +1,12 @@
 using System.Text.RegularExpressions;
-using Tasky.Services.Identities.Domain.Exceptions;
+using Tasky.BuildingBlocks.Core.Exceptions;
 
 namespace Tasky.Services.Identities.Domain.ValueObjects;
 
 public class Password(string value) :IEquatable<Password>
 {
-
-    public static readonly Regex SpeciaclCharactersRegex = new(@"[!@#$%^&*(),.?""':{}|<>]",RegexOptions.Compiled);
-    public string Value { get; private set; } = value;
+    private static readonly Regex SpeciaclCharactersRegex = new(@"[!@#$%^&*(),.?""':{}|<>]",RegexOptions.Compiled);
+    public string Value { get; } = value;
 
     public static Password FromHash(string hash)
     {

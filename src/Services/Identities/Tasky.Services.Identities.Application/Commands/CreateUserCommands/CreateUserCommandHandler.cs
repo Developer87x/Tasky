@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Logging;
 using Tasky.BuildingBlocks.Core.CRQS;
+using Tasky.BuildingBlocks.Core.Exceptions;
 using Tasky.Services.Identities.Application.Common;
 using Tasky.Services.Identities.Application.Dtos;
 using Tasky.Services.Identities.Domain.Entities;
-using Tasky.Services.Identities.Domain.Exceptions;
 using Tasky.Services.Identities.Domain.Repositories;
 using Tasky.Services.Identities.Domain.ValueObjects;
 

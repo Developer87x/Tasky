@@ -2,6 +2,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Tasky.BuildingBlocks.Core.Exceptions;
 
 namespace Tasky.Services.Identities.Infrastructure.Configurations.Middlewares;
 
@@ -21,7 +22,8 @@ public class ExceptionHandling(RequestDelegate next, ILogger<ExceptionHandling> 
                 ex.Message);
 
             if (context.Response.HasStarted)
-            throw;
+                // ReSharper disable once BadChildStatementIndent
+                throw;
 
             await HandleExceptionAsync(context, ex);
         }
@@ -31,9 +33,9 @@ public class ExceptionHandling(RequestDelegate next, ILogger<ExceptionHandling> 
     {
         var (statusCode, message) = exception switch
         {
-            Domain.Exceptions.NotFoundException e => (StatusCodes.Status404NotFound, e.Message),
-            Domain.Exceptions.BadRequestException e => (StatusCodes.Status400BadRequest, e.Message),
-            Domain.Exceptions.UnauthorizedException e => (StatusCodes.Status401Unauthorized, e.Message),
+            NotFoundException e => (StatusCodes.Status404NotFound, e.Message),
+            BadRequestException e => (StatusCodes.Status400BadRequest, e.Message),
+            UnauthorizedException e => (StatusCodes.Status401Unauthorized, e.Message),
             _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred.")
         };
 

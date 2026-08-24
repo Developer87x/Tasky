@@ -1,6 +1,6 @@
+using Tasky.BuildingBlocks.Core.Exceptions;
 using Tasky.BuildingBlocks.Core.Models;
 using Tasky.Services.Identities.Domain.DomainEvents;
-using Tasky.Services.Identities.Domain.Exceptions;
 using Tasky.Services.Identities.Domain.ValueObjects;
 namespace Tasky.Services.Identities.Domain.Entities;
 

@@ -1,12 +1,12 @@
 using System.Text.RegularExpressions;
-using Tasky.Services.Identities.Domain.Exceptions;
+using Tasky.BuildingBlocks.Core.Exceptions;
 
 namespace Tasky.Services.Identities.Domain.ValueObjects;
 
 public class Email(string  value) : IEquatable<Email>
 {
     private static readonly Regex EmailRegex = new(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
-    public string Value { get; private set; } =value;
+    public string Value { get; } =value;
 
     public static Email Create(string email)
     {

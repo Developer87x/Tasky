@@ -1,4 +1,4 @@
-using Tasky.Services.Identities.Domain.Exceptions;
+using Tasky.BuildingBlocks.Core.Exceptions;
 
 namespace Tasky.Services.Identities.Domain.Entities;
 

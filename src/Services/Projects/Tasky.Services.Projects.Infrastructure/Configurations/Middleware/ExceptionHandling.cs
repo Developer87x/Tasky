@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Tasky.Services.Projects.Domain.Exceptions;  
+using Tasky.BuildingBlocks.Core.Exceptions;  
 
 namespace Tasky.Services.Projects.Infrastructure.Configurations.Middleware;
 
