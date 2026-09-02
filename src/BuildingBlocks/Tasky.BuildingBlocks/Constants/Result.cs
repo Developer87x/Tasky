@@ -1,10 +1,9 @@
-namespace Tasky.Services.Identities.Application.Common;
+namespace Tasky.BuildingBlocks.Constants;
 
 public class Result
 {
     public bool IsSuccess { get; set; }
     public string? Error { get; set; }
-
 
     protected Result(bool isSuccess, string error)
     {
@@ -24,5 +23,5 @@ public class Result<T> : Result
         Value =value;
     }
     public static Result<T> Success(T value)=> new(value,true,string.Empty);
-    public static new Result<T> Failure(string error)=> new(default!,false,error);
+    public new static Result<T> Failure(string error)=> new(default!,false,error);
 }

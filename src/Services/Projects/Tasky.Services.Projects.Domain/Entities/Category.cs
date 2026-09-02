@@ -9,17 +9,20 @@ public class Category :AggregateRoot<CategoryId>
     {
     }
 
-	protected Category(CategoryId id, string categoryName) : this(id)
+	protected Category(CategoryId id, string categoryName,string userId) : this(id)
 	{
 		CategoryName = categoryName;
+		CreatedAt = DateTime.UtcNow;
+		CreatedBy = userId;
+		
 	}
 
 	public string? CategoryName { get; private set; } = string.Empty;
 	public IReadOnlyCollection<Project> Projects => _projects.AsReadOnly();
    
-	public static Category Create(string categoryName)
+	public static Category Create(string categoryName,string userId)
 	{
-		return new Category(CategoryId.New, categoryName);
+		return new Category(CategoryId.New, categoryName,userId);
 	}
 
 	public void UpdateCategoryName(string categoryName)

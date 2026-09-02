@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
+using Tasky.BuildingBlocks.Constants;
 using Tasky.BuildingBlocks.Core.CRQS;
-using Tasky.Services.Identities.Application.Common;
 using Tasky.Services.Identities.Domain.Repositories;
 
 namespace Tasky.Services.Identities.Application.Commands.AssignPermissionsToRoleCommand;

@@ -1,5 +1,5 @@
 using Tasky.BuildingBlocks.Core.CRQS;
-using Tasky.Services.Identities.Application.Common;
+using Tasky.BuildingBlocks.Constants;
 
 namespace Tasky.Services.Identities.Application.Commands.ActivateUserCommands;
 

@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
+using Tasky.BuildingBlocks.Constants;
 using Tasky.BuildingBlocks.Core.CRQS;
-using Tasky.Services.Projects.Application.Common;
 using Tasky.Services.Projects.Domain.Entities;
 using Tasky.Services.Projects.Domain.Repositories;
 
@@ -19,7 +19,7 @@ public class CreateCategoryCommandHandler(ICategoryRepository categoryRepository
             return Result.Failure($"Category with name {command.CategoryName} already exists.");
         }
         _logger.LogInformation("Creating new category with name {CategoryName}.", command.CategoryName);
-        var category = Category.Create(command.CategoryName!);
+        var category = Category.Create(command.CategoryName!,command.UserId!);
         await _categoryRepository.AddAsync(category, cancellationToken);
         var result = await _categoryRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
         return result ? Result.Success() : Result.Failure("Failed to create category.");
