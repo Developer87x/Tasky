@@ -76,15 +76,7 @@ public class UsersController(ILogger<UsersController> logger, ICommandDispatcher
         _logger.LogWarning("User {UserId} not found", userId);
         return NotFound();
     }
-
-    /// <summary>
-    /// Assign a role to a user (admin-only operation).
-    /// Requires: Users.AssignRole permission
-    /// 
-    /// SECURITY: This is a critical operation.
-    /// Always verify the requester has explicit Users.AssignRole permission.
-    /// This is NOT implicit from administrative role.
-    /// </summary>
+    
     [HttpPut("assign-role-to-user")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

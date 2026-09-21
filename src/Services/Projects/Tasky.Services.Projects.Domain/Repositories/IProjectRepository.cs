@@ -5,5 +5,5 @@ namespace Tasky.Services.Projects.Domain.Repositories;
 
 public interface IProjectRepository : IRepository<Project>
 {
-    
+    Task<Project?> GetByProjectCodeAsync(string projectCode, CancellationToken cancellationToken = default);
 }

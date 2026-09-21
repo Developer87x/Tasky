@@ -1,4 +1,5 @@
 using Tasky.BuildingBlocks.Core.Models;
+using Tasky.Services.Projects.Domain.DomainEvents;
 
 namespace Tasky.Services.Projects.Domain.Entities;
 
@@ -14,7 +15,7 @@ public class Category :AggregateRoot<CategoryId>
 		CategoryName = categoryName;
 		CreatedAt = DateTime.UtcNow;
 		CreatedBy = userId;
-		
+		AddDomainEvent(new CategoryCreatedEvent(this.Id.Value));	
 	}
 
 	public string? CategoryName { get; private set; } = string.Empty;
@@ -29,6 +30,7 @@ public class Category :AggregateRoot<CategoryId>
 	{
 		CategoryName = categoryName;
 		LastModified = DateTime.UtcNow;
+		AddDomainEvent(new CategoryUpdatedEvent(this.Id.Value));
 	}
 
 }

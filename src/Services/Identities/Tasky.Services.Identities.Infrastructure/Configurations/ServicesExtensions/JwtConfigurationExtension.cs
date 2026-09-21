@@ -31,7 +31,6 @@ public static class JwtConfigurationExtension
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = configuration["JwtSettings:Issuer"],
                     ValidAudiences = configuration.GetSection("JwtSettings:Audience").Get<string[]>(),

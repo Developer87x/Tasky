@@ -37,7 +37,7 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
         builder.HasMany(s => s.RefreshTokens)
             .WithOne(rt => rt.User)
             .HasForeignKey(rt => rt.UserId)
-            .HasConstraintName("fk_refreshtokens_userid")
+            .HasConstraintName("fk_refreshTokens_userid")
             .OnDelete(DeleteBehavior.Cascade);
         builder.Navigation(s => s.RefreshTokens).UsePropertyAccessMode(PropertyAccessMode.Field);
         builder.OwnsOne(s => s.Password, p =>
@@ -48,6 +48,11 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
         {
             e.Property(e => e.Value).IsRequired().HasColumnName("email").HasMaxLength(255);
             e.HasIndex(e => e.Value).IsUnique().HasDatabaseName("ux_users_email");
+        });
+        builder.OwnsOne(e => e.Profile, e =>
+        {
+            e.Property(s=>s.FirstName).HasColumnName("first_name");
+            e.Property(s=>s.LastName).HasColumnName("last_name");
         });
         builder.Ignore(s=>s.DomainEvents);
     }

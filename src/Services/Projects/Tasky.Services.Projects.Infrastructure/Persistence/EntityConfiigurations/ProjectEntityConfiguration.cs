@@ -14,6 +14,7 @@ public class ProjectEntityConfiguration : IEntityTypeConfiguration<Project>
             value => ProjectId.From(value)
         ).ValueGeneratedNever().HasColumnName("id");
         builder.HasIndex(x => x.ProjectName).IsUnique();
+        builder.HasIndex(x => x.ProjectCode).IsUnique();
         builder.ToTable("projects", ProjectDb.DEFAULT_SCHEMA);
     }
 }

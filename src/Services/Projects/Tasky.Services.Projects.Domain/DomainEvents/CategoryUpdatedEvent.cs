@@ -2,7 +2,7 @@ using Tasky.BuildingBlocks.Core.Events;
 
 namespace Tasky.Services.Projects.Domain.DomainEvents;
 
-public class CategoryCreatedEvent(Guid id) : IDomainEvent
+public class CategoryUpdatedEvent(Guid id) : IDomainEvent
 {
     public Guid Id { get; } = id;
     public Guid EventId { get; } = Guid.NewGuid();

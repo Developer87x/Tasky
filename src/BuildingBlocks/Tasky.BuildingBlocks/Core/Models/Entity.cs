@@ -1,6 +1,6 @@
 namespace Tasky.BuildingBlocks.Core.Models;
 
-public class Entity<TId> : IEntity<TId>
+public abstract class Entity<TId> : IEntity<TId>
 {
     public TId Id { get; set; } = default!;
     public DateTime? CreatedAt { get; set; }

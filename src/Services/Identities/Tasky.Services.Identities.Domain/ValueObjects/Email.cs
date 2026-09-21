@@ -1,9 +1,10 @@
 using System.Text.RegularExpressions;
 using Tasky.BuildingBlocks.Core.Exceptions;
+using Tasky.BuildingBlocks.Core.Models;
 
 namespace Tasky.Services.Identities.Domain.ValueObjects;
 
-public class Email(string  value) : IEquatable<Email>
+public class Email(string  value) : ValueObject
 {
     private static readonly Regex EmailRegex = new(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
     public string Value { get; } =value;
@@ -12,12 +13,15 @@ public class Email(string  value) : IEquatable<Email>
     {
         if(string.IsNullOrWhiteSpace(email))
             throw new DomainException("Email cannot be empty");
-        if(!EmailRegex.IsMatch(email.ToLowerInvariant()))
-            throw new DomainException("Email is not valid");
-        return new Email(email);
+        return !EmailRegex.IsMatch(email.ToLowerInvariant()) ? throw new DomainException("Email is not valid") : new Email(email);
     }
 
     public bool Equals(Email? other) => other is not null && Value.Equals(other.Value, StringComparison.OrdinalIgnoreCase);
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Value;
+    }
+
     public override bool Equals(object? obj)=> obj is Email other && Equals(other);
     public override string ToString() => Value;
     public override int GetHashCode()=> Value.GetHashCode();

@@ -33,6 +33,10 @@ public class CategoryRepository(ProjectDb dbContext) : ICategoryRepository
 
     public Task<Category?> GetByNameAsync(string categoryName, CancellationToken cancellationToken = default)
     {
-        return _dbContext.Categories.FirstOrDefaultAsync(c => c.CategoryName == categoryName, cancellationToken);
+        return categoryName switch
+        {
+            null => throw new ArgumentException("category name cannot be empty", nameof(categoryName)),
+            _ => _dbContext.Categories.FirstOrDefaultAsync(c => c.CategoryName == categoryName, cancellationToken)
+        };
     }
 }
