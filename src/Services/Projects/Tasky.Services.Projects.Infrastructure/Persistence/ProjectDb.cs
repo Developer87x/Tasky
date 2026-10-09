@@ -9,14 +9,14 @@ namespace Tasky.Services.Projects.Infrastructure.Persistence;
 
 public class ProjectDb(DbContextOptions<ProjectDb> options,IServiceProvider serviceProvider) : DbContext(options), IUnitOfWork
 {
-    public const string DEFAULT_SCHEMA = "projects";
+    public const string DefaultSchema = "projects";
     public DbSet<Category> Categories { get; set; }
     public DbSet<Project> Projects { get; set; }
     public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default)
     {
         //get all domain events from the tracked entities
         var domainEntities = ChangeTracker.Entries<IAggregateRoot>()
-            .Where(e => e.Entity.DomainEvents != null && e.Entity.DomainEvents.Count > 0)
+            .Where(e => e.Entity.DomainEvents.Count > 0)
             .Select(e => e.Entity)
             .ToList();
         var domainEvents = domainEntities.SelectMany(e => e.DomainEvents)
@@ -38,7 +38,7 @@ public class ProjectDb(DbContextOptions<ProjectDb> options,IServiceProvider serv
         return await base.SaveChangesAsync(cancellationToken) > 0;
     }
 
-    override protected void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new CategoryEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ProjectEntityConfiguration());

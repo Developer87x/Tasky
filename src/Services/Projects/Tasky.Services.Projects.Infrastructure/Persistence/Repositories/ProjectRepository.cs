@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Tasky.BuildingBlocks.Core.EfCore;
+using Tasky.BuildingBlocks.Core.Exceptions;
 using Tasky.Services.Projects.Domain.Entities;
 using Tasky.Services.Projects.Domain.Repositories;
 
@@ -34,6 +35,15 @@ public class ProjectRepository(ProjectDb dbContext) : IProjectRepository
         {
             null=> throw new ArgumentException("Project code cannot be empty",nameof(projectCode)),
             _=> _dbContext.Projects.FirstOrDefaultAsync(x => x.ProjectCode == projectCode, cancellationToken)
+        };
+    }
+
+    public Task<Project?> GetByProjectNameAsync(string? projectName, CancellationToken cancellationToken = default)
+    {
+        return projectName switch
+        {
+            null => throw new ArgumentException("project Name cannot be empty", nameof(projectName)),
+            _ => _dbContext.Projects.FirstOrDefaultAsync(x => x.ProjectName == projectName, cancellationToken)
         };
     }
 }

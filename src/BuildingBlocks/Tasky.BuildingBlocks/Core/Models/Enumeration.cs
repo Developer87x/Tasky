@@ -4,9 +4,9 @@ namespace Tasky.BuildingBlocks.Core.Models;
 
 public abstract class Enumeration : IComparable
 {
-    private string Name { get; set; }
+    public string Name { get;set; }
 
-    private int Id { get; set; }
+    public int Id { get; set; }
 
     protected Enumeration(int id, string name) => (Id, Name) = (id, name);
 

@@ -2,11 +2,8 @@ using Tasky.BuildingBlocks.Core.Models;
 
 namespace Tasky.Services.Projects.Domain.Enumerations;
 
-public class ProjectStatus :Enumeration
+public class ProjectStatus(int id, string name) : Enumeration(id, name)
 {
-    public ProjectStatus(int id, string name) : base(id, name)
-    {
-    }
     public static ProjectStatus Active => new(1, "Active");
     public static ProjectStatus Inactive => new(2, "Inactive");
     public static ProjectStatus Completed => new(3, "Completed");

@@ -29,8 +29,8 @@ public class RefreshToken : AggregateRoot<RefreshTokenId>
     public static RefreshToken Create(UserId userId)
     {
         var rowToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
-        var tokenHased = Convert.ToBase64String(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(rowToken)));
-        var refreshToken = new RefreshToken(RefreshTokenId.NewId(), tokenHased, DateTime.UtcNow.AddDays(7), DateTime.UtcNow, userId)
+        var tokenHashed = Convert.ToBase64String(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(rowToken)));
+        var refreshToken = new RefreshToken(RefreshTokenId.NewId(), tokenHashed, DateTime.UtcNow.AddDays(7), DateTime.UtcNow, userId)
         {
             RawToken = rowToken
         };

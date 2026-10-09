@@ -38,6 +38,7 @@ public class ExceptionHandling(RequestDelegate next, ILogger<ExceptionHandling> 
             NotFoundException e => (StatusCodes.Status404NotFound, e.Message),
             BadRequestException e => (StatusCodes.Status400BadRequest, e.Message),
             UnauthorizedException e => (StatusCodes.Status401Unauthorized, e.Message),
+            
             _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred.")
         };
 

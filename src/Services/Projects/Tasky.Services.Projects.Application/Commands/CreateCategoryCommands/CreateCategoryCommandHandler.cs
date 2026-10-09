@@ -15,10 +15,10 @@ public class CreateCategoryCommandHandler(ICategoryRepository categoryRepository
         var isExistingCategory =await  _categoryRepository.GetByNameAsync(command.CategoryName!, cancellationToken);
         if(isExistingCategory is not null)
         {
-            _logger.LogWarning("Category with name {CategoryName} already exists.", command.CategoryName);
+            _logger.LogWarning("Category with name {CategoryName} already exists", command.CategoryName);
             return Result.Failure($"Category with name {command.CategoryName} already exists.");
         }
-        _logger.LogInformation("Creating new category with name {CategoryName}.", command.CategoryName);
+        _logger.LogInformation("Creating new category with name {CategoryName}", command.CategoryName);
         var category = Category.Create(command.CategoryName!,command.UserId!);
         await _categoryRepository.AddAsync(category, cancellationToken);
         var result = await _categoryRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);

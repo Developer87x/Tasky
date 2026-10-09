@@ -22,12 +22,7 @@ services.AddIdentityDatabase(configuration);              // Database and reposi
 services.AddCqrs();                                       // CQRS pipeline
 services.AddRepositories();                               // Repository implementations
 services.AddJwtAuthentication(configuration);             // JWT authentication with pluggable signing
-
-// Register improved token generation service
 services.AddScoped<ITokenService, TokenGenerationService>();
-
-// Centralized authorization policy configuration
-// All policies defined in one place for consistency and audit
 services.AddApplicationAuthorization();
 
 services.AddRateLimiting();                               // Rate limiting to prevent abuse

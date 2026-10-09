@@ -23,7 +23,7 @@ public class CategoryEntityConfiguration : IEntityTypeConfiguration<Category>
             .WithOne(x => x.Category)
             .HasForeignKey(x => x.CategoryId)
             .OnDelete(DeleteBehavior.Cascade);
-        builder.ToTable("categories", ProjectDb.DEFAULT_SCHEMA);
+        builder.ToTable("categories", ProjectDb.DefaultSchema);
         
     }
 }
