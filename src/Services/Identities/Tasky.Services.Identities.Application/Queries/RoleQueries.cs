@@ -1,5 +1,6 @@
 using Dapper;
 using Microsoft.Extensions.Logging;
+using Tasky.BuildingBlocks.Core.Pagination;
 using Tasky.Services.Identities.Application.Dtos;
 
 namespace Tasky.Services.Identities.Application.Queries;
@@ -11,14 +12,16 @@ public class RoleQueries(string connectionString, ILogger<RoleQueries> logger) :
 
     public Task<RoleDto?> GetRoleByIdAsync(Guid roleId, CancellationToken cancellationToken)
     {
-        var sql = @"
-            SELECT r.id as roleId, r.role_name AS name,
-                p.id as permissionId , p.permission_name AS name
-            FROM identities.roles r
-            LEFT JOIN identities.role_permissions rp ON r.id = rp.role_id
-            LEFT JOIN identities.permissions p ON rp.permission_id = p.id
-            WHERE r.id = @RoleId;
-        ";
+        const string sql = """
+
+                                       SELECT r.id as roleId, r.role_name AS name,
+                                           p.id as permissionId , p.permission_name AS name
+                                       FROM identities.roles r
+                                       LEFT JOIN identities.role_permissions rp ON r.id = rp.role_id
+                                       LEFT JOIN identities.permissions p ON rp.permission_id = p.id
+                                       WHERE r.id = @RoleId;
+                                   
+                           """;
         _logger.LogInformation("Executing SQL query to retrieve role by ID: {RoleId}", roleId);
         using var connection = new Npgsql.NpgsqlConnection(_connectionString);
         var roleDictionary = new Dictionary<Guid, RoleDto>();
@@ -33,7 +36,7 @@ public class RoleQueries(string connectionString, ILogger<RoleQueries> logger) :
                     roleDictionary.Add(roleEntry.RoleId, roleEntry);       
                 }
 
-                if (permission != null && !roleEntry.Permissions.Any(p => p.PermissionId == permission.PermissionId))
+                if (roleEntry.Permissions.All(p => p.PermissionId != permission.PermissionId))
                 {
                     roleEntry.Permissions.Add(permission);
                 }
@@ -44,10 +47,10 @@ public class RoleQueries(string connectionString, ILogger<RoleQueries> logger) :
             splitOn: "permissionId"
         );
 
-        return Task.FromResult(roleDictionary.Values.FirstOrDefault());
+        return Task.FromResult(result.FirstOrDefault());
     }
 
-    public Task<PaginatedResult<RoleDto>> GetRolesAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
+    public Task<IPageList<RoleDto>> GetRolesAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
         using var connection = new Npgsql.NpgsqlConnection(_connectionString);
         const string sql = @"
@@ -73,7 +76,7 @@ public class RoleQueries(string connectionString, ILogger<RoleQueries> logger) :
                     roleDictionary.Add(roleEntry.RoleId, roleEntry);
                 }
 
-                if (permission != null && !roleEntry.Permissions.Any(p => p.PermissionId == permission.PermissionId))
+                if (roleEntry.Permissions.All(p => p.PermissionId != permission.PermissionId))
                 {
                     roleEntry.Permissions.Add(permission);
                 }
@@ -85,15 +88,10 @@ public class RoleQueries(string connectionString, ILogger<RoleQueries> logger) :
         );
 
         var totalCount = connection.ExecuteScalar<int>("SELECT COUNT(*) FROM identities.roles;");
-        _logger.LogInformation("Retrieved {Count} roles from the database.", result.Count());
+        var roles = result as RoleDto[] ?? result.ToArray();
+        _logger.LogInformation("Retrieved {Count} roles from the database", roles.Count());
 
-        return Task.FromResult(new PaginatedResult<RoleDto>
-        {
-            Items = [.. result.Distinct()],
-            TotalCount = totalCount,
-            PageSize = pageSize,
-            CurrentPage = pageNumber
-        });
+        return Task.FromResult<IPageList<RoleDto>>(new PageList<RoleDto>([.. roles.Distinct()],totalCount,pageNumber,pageSize));
     
     }
 }

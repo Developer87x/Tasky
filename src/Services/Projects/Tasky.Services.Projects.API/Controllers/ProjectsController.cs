@@ -2,26 +2,47 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tasky.BuildingBlocks.Core.CRQS;
 using Tasky.Services.Projects.Application.Commands.CreateProjectCommands;
+using Tasky.Services.Projects.Application.Queries;
+
 
 namespace Tasky.Services.Projects.API.Controllers;
 [ApiController]
 [Route("api/projects")]
 [Authorize]
-public class ProjectsController :ControllerBase
+public class ProjectsController(
+    ICommandDispatcher dispatcher,
+    IProjectsQueries projectsQueries,
+    ILogger<ProjectsController> logger)
+    : ControllerBase
 {
-    private readonly ICommandDispatcher _dispatcher;
-    private readonly ILogger<ProjectsController> _logger;
-
-    public ProjectsController(ICommandDispatcher dispatcher,ILogger<ProjectsController> logger)
-    {
-        _dispatcher =dispatcher;
-        _logger =logger;
-    }
-
     [HttpPost("create-project")]
-    public async Task<IActionResult> Create([FromBody] CreateProjectCommand comand, CancellationToken cancellationToken)
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Create([FromBody] CreateProjectCommand command, CancellationToken cancellationToken)
     {
-        var result = await _dispatcher.DispatchAsync(comand, cancellationToken);
-        return result.IsSuccess ? Ok() : BadRequest(result.Error);
+        var result = await dispatcher.DispatchAsync(command, cancellationToken);
+        return result.IsSuccess ? Created(string.Empty,result) : BadRequest(result);
     }
+    [HttpGet("{projectId:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]   
+    
+    public async Task<IActionResult> GetProject(Guid projectId, CancellationToken cancellationToken)
+    {
+        
+        logger.LogInformation(
+            "User {CurrentUserId} trying to retrieve project {TargetProjectId}",
+            User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "unknown",
+            projectId);
+        
+        var projects= await projectsQueries.GetProjectById(projectId);
+        if(projects is null)
+        {
+            return NotFound();
+        }
+        return Ok(projects);
+    }
+    
 }
