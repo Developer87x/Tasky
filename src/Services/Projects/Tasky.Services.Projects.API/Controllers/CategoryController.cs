@@ -19,11 +19,14 @@ public class CategoryController(ILogger<CategoryController> logger, ICommandDisp
     [HttpPost("Create-category")]
     public async Task<IActionResult> Post([FromBody] CreateCategoryCommand command,CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Creating category with name {@Command}", command);
         var result = await dispatcher.DispatchAsync(command, cancellationToken);
-        if(result.IsSuccess)
+        if (!result.IsSuccess)
         {
-            return Created(string.Empty, result);
+            _logger.LogError("Category creation failed with error {Error}", result.Error);
+            return BadRequest(result);
         }
-        return BadRequest(result);
+        _logger.LogInformation("Category created with id {@Result}", result);
+        return Created(string.Empty, result);
     }
 }

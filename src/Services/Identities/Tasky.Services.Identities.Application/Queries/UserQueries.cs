@@ -30,7 +30,7 @@ public class UserQueries(string connectionString, ILogger<UserQueries> logger) :
 
         var userDictionary = new Dictionary<Guid, UserDto>();
         _logger.LogInformation("Executing SQL query to retrieve user by ID: {UserId}", userId);
-        var result = await connection.QueryAsync<UserDto, RoleDto, PermissionDto, UserDto>(
+         await connection.QueryAsync<UserDto, RoleDto, PermissionDto, UserDto>(
             sql,
             (user, role, permission) =>
             {
@@ -47,14 +47,13 @@ public class UserQueries(string connectionString, ILogger<UserQueries> logger) :
                     userEntry.Roles.Add(role);
                 }
 
-                if (role != null)
+                
+                var roleEntry = userEntry.Roles.First(r => r.RoleId == role.RoleId);
+                if (roleEntry.Permissions.All(p => p.PermissionId != permission.PermissionId))
                 {
-                    var roleEntry = userEntry.Roles.First(r => r.RoleId == role.RoleId);
-                    if (roleEntry.Permissions.All(p => p.PermissionId != permission.PermissionId))
-                    {
-                        roleEntry.Permissions.Add(permission);
-                    }
+                    roleEntry.Permissions.Add(permission);
                 }
+                
 
                 return userEntry;
             },

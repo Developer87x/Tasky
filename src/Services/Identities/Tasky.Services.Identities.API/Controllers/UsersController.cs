@@ -52,7 +52,7 @@ public class UsersController(ILogger<UsersController> logger, ICommandDispatcher
         return BadRequest(result);
     }
 
-    [HttpGet("{userId}")]
+    [HttpGet("{userId:guid}")]
     [Authorize(Roles = Permissions.Roles.Users)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

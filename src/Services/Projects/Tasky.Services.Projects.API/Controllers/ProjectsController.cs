@@ -40,8 +40,10 @@ public class ProjectsController(
         var projects= await projectsQueries.GetProjectById(projectId);
         if(projects is null)
         {
+            logger.LogError("Project with id {ProjectId} not found", projectId);
             return NotFound();
         }
+        logger.LogInformation("Project with id {ProjectId} found", projectId);
         return Ok(projects);
     }
     
